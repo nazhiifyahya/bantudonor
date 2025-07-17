@@ -8,7 +8,7 @@ $currentPage = 'home';
 $featuredRequests = [];
 
 // Include header template
-include 'includes/header.php';
+include 'layout/header.php';
 ?>
 
     <!-- Hero Section -->
@@ -67,4 +67,4 @@ include 'includes/header.php';
         </div>
     </section>
 
-<?php include 'includes/footer.php'; ?>
+<?php include 'layout/footer.php'; ?>
