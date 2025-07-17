@@ -1,4 +1,6 @@
 <?php
+session_start();
+require_once 'models/User.php';
 
 // Set page variables for header template
 $pageTitle = 'BantuDonor - Jadilah Pahlawan Mulai dari Satu Tetes Darah';
