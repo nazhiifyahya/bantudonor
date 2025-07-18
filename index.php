@@ -25,7 +25,11 @@ include 'layout/header.php';
             </p>
             <div class="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-4 mt-4">
                 <a href="create_request.php" class="px-8 py-3 bg-red-500 rounded-full text-slate-50 text-base font-semibold text-center w-full sm:w-auto">Ajukan Permohonan</a>
-                <a href="register.php" class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
+                <?php if (!isset($_SESSION['user_id'])): ?>
+                    <a href="register.php" class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
+                <?php else: ?>
+                    <a href="blood_requests.php" class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
+                <?php endif; ?>
             </div>
         </div>
         <img class="w-full sm:w-[690px] h-64 sm:h-80 md:h-96 object-cover" src="/images/hero-img.png" alt="Hero Image" />
