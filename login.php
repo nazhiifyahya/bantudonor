@@ -1,91 +1,42 @@
 <?php
 session_start();
-require_once 'models/User.php';
-
-// Set page variables for header template
 $pageTitle = 'Login - BantuDonor';
-$currentPage = 'login';
-
-$error = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $userModel = new User();
-    
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    
-    if (empty($email) || empty($password)) {
-        $error = 'Email dan password wajib diisi.';
-    } else {
-        $user = $userModel->verifyPassword($email, $password);
-        if ($user) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['full_name'];
-            $_SESSION['user_email'] = $user['email'];
-            header('Location: dashboard.php');
-            exit;
-        } else {
-            $error = 'Email atau password salah.';
-        }
-    }
-}
-
-// Include header template
 include 'layout/header.php';
 ?>
 
-    <!-- Login Form -->
-    <section class="bg-slate-50">
-        <div class="w-full h-[622px] px-20 py-16 flex flex-col justify-center items-center gap-10 max-w-[1280px] relative mx-auto">
-        <div class="w-[560px] px-10 py-8 bg-white rounded-lg flex flex-col justify-start items-center gap-5">
-            <div class="w-full flex flex-col justify-start items-center gap-2">
-                <h2 class="text-gray-900 text-3xl font-bold">Login</h2>
-                <p class="text-center text-slate-600 text-base font-normal">
-                    Masuk ke akun Anda untuk mulai membantu sesama
-                </p>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Masuk ke Akun Anda
+        </h2>
+        <form class="mt-8 space-y-6" action="login_process.php" method="POST">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div class="mb-4">
+                    <label for="email" class="sr-only">Email address</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required
+                        class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
+                        placeholder="Email address">
+                </div>
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" autocomplete="current-password" required
+                        class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
+                        placeholder="Password">
+                </div>
             </div>
-            
-            <div class="w-full h-0 border-t border-slate-200"></div>
-            
-            <?php if ($error): ?>
-                <div class="w-full p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                    <?php echo htmlspecialchars($error); ?>
-                </div>
-            <?php endif; ?>
-            
-            <form method="POST" class="w-full flex flex-col justify-start items-center gap-4">
-                <!-- Email -->
-                <div class="w-full flex flex-col justify-start items-start gap-2">
-                    <label class="text-slate-600 text-base font-normal">Email</label>
-                    <input type="email" 
-                           name="email" 
-                           required
-                           value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
-                           class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
-                </div>
-                
-                <!-- Password -->
-                <div class="w-full flex flex-col justify-start items-start gap-2">
-                    <label class="text-slate-600 text-base font-normal">Password</label>
-                    <input type="password" 
-                           name="password" 
-                           required
-                           class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
-                </div>
-                
-                <!-- Submit Button -->
-                <button type="submit" 
-                        class="w-full px-8 py-3 bg-red-500 rounded-full text-slate-50 text-base font-semibold hover:bg-red-600 transition-colors">
-                    Login
+
+            <div>
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Masuk
                 </button>
-            </form>
-            
-            <div class="text-center">
-                <span class="text-slate-600 text-base font-normal">Belum punya akun? </span>
-                <a href="register.php" class="text-red-500 text-base font-semibold underline">Daftar Sekarang</a>
             </div>
-        </div>
-        </div>
-    </section>
+        </form>
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Belum punya akun?
+            <a href="register.php" class="font-medium text-red-600 hover:text-red-500">Daftar sekarang</a>
+        </p>
+    </div>
+</div>
 
 <?php include 'layout/footer.php'; ?>
