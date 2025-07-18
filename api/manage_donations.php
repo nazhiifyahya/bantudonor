@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Donation.php';
 
 // Check if user is logged in
@@ -81,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             try {
-                // Check if donation belongs to user and is personal donation (or allow editing all personal donations)
+                // Check if donation exist and belongs to the user
                 $donation = $donationModel->getById($id);
                 if (!$donation || $donation['user_id'] != $_SESSION['user_id']) {
                     $response = ['status' => 'error', 'message' => 'Donasi tidak ditemukan atau tidak dapat diedit'];
@@ -117,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             try {
-                // Check if donation belongs to user
+                // Check if donation exist and belongs to the user
                 $donation = $donationModel->getById($id);
                 if (!$donation || $donation['user_id'] != $_SESSION['user_id']) {
                     $response = ['status' => 'error', 'message' => 'Donasi tidak ditemukan atau tidak dapat dihapus'];
