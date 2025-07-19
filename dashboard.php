@@ -1,6 +1,5 @@
 <?php
 session_start();
-require_once 'config/database.php';
 require_once 'models/User.php';
 require_once 'models/Donation.php';
 
@@ -686,7 +685,7 @@ include 'layout/header.php';
             formData.append('action', 'get');
             formData.append('id', id);
             
-            fetch('api/manage_donations.php', {
+            fetch('handler/manage_donations.php', {
                 method: 'POST',
                 body: formData
             })
@@ -724,7 +723,7 @@ include 'layout/header.php';
             formData.append('action', 'delete');
             formData.append('id', id);
             
-            fetch('api/manage_donations.php', {
+            fetch('handler/manage_donations.php', {
                 method: 'POST',
                 body: formData
             })
@@ -761,7 +760,7 @@ include 'layout/header.php';
             
             const formData = new FormData(this);
             
-            fetch('api/manage_donations.php', {
+            fetch('handler/manage_donations.php', {
                 method: 'POST',
                 body: formData
             })
