@@ -24,7 +24,13 @@ try {
     }
     
     // Get address and administrative data from geoapify (OpenStreetMap)
-    $geoapifyUrl = "https://api.geoapify.com/v1/geocode/reverse?lat={$lat}&lon={$lon}&format=json&lang=id&apiKey={$apiKey}";
+    $geoapifyUrl = "https://api.geoapify.com/v1/geocode/reverse?" . http_build_query([
+        'lat' => $lat,
+        'lon' => $lon,
+        'apiKey' => $apiKey,
+        'format' => 'json',
+    ]);
+
     $context = stream_context_create([
         'http' => [
             'timeout' => 15,
@@ -52,7 +58,7 @@ try {
     }
     
     // Extract address components
-    $address = $geoapifyData['results'][0]['address_line2'];
+    $address = $geoapifyData['results'][0]['formatted'];
     
     // Extract province and regency from address details
     $province = $geoapifyData['results'][0]['state'];
