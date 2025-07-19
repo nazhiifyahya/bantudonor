@@ -1,12 +1,16 @@
 <?php
 session_start();
 
+require_once 'models/BloodRequest.php';
+
 // Set page variables for header template
 $pageTitle = 'BantuDonor - Jadilah Pahlawan Mulai dari Satu Tetes Darah';
 $currentPage = 'home';
 
 // Get featured blood requests
-$featuredRequests = [];
+$bloodRequestModel = new BloodRequest();
+$featuredRequests = $bloodRequestModel->getActiveRequests(4);
+
 
 // Include header template
 include 'layout/header.php';
@@ -44,7 +48,7 @@ include 'layout/header.php';
             <a href="blood_requests.php" class="px-8 py-3 rounded-full border border-slate-50 text-slate-50 text-base font-semibold text-center">Lihat Semua</a>
         </div>
         
-        <div class="w-full flex flex-col sm:flex-row justify-start items-start gap-6 sm:gap-10 flex-wrap">
+        <div class="w-full flex flex-col sm:flex-row justify-start items-center gap-6 sm:gap-10 flex-wrap">
             <?php if (!empty($featuredRequests)): ?>
                 <?php foreach ($featuredRequests as $request): ?>
                 <div class="flex-1 min-w-[280px] max-w-sm p-5 bg-white flex flex-col justify-start items-start gap-2 rounded-lg shadow-md">
@@ -61,10 +65,6 @@ include 'layout/header.php';
                         <div class="flex justify-start items-center gap-2">
                             <i class="mdi mdi-blood-bag text-red-500"></i>
                             <div class="text-slate-600 text-xs font-normal"><?php echo htmlspecialchars($request['blood_bags_needed']); ?> Kantong</div>
-                        </div>
-                        <div class="flex justify-start items-center gap-2">
-                            <i class="mdi mdi-calendar-month text-red-500"></i>
-                            <div class="text-slate-600 text-xs font-normal"><?php echo htmlspecialchars($request['deadline']); ?></div>
                         </div>
                     </div>
                 </div>

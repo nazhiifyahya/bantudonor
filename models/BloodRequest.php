@@ -53,7 +53,6 @@ class BloodRequest extends BaseModel {
     public function getActiveRequests($limit = null, $offset = null) {
         $sql = "SELECT * FROM {$this->table} 
                 WHERE status = 'Active' 
-                AND needed_date >= CURDATE() 
                 ORDER BY urgency_level DESC, needed_date ASC";
         
         if ($limit) {
