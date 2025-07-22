@@ -20,26 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($action) {
         case 'add':
             // Validate input
-            $donationDate = $_POST['donation_date'] ?? '';
             $donationType = $_POST['donation_type'] ?? '';
             $location = $_POST['location'] ?? '';
             $bloodBags = intval($_POST['blood_bags'] ?? 1);
             
-            if (empty($donationDate) || empty($donationType) || empty($location)) {
+            if (empty($donationType) || empty($location)) {
                 $response = ['status' => 'error', 'message' => 'Semua field wajib diisi'];
                 break;
             }
-            
-            // Validate date (tidak boleh di masa depan)
-            if (strtotime($donationDate) > time()) {
-                $response = ['status' => 'error', 'message' => 'Tanggal donasi tidak boleh di masa depan'];
-                break;
-            }
-            
+
             try {
                 $data = [
                     'user_id' => $_SESSION['user_id'],
-                    'donation_date' => $donationDate,
                     'donation_type' => $donationType,
                     'location' => $location,
                     'blood_bags' => $bloodBags,
@@ -63,22 +55,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         case 'edit':
             $id = intval($_POST['id'] ?? 0);
-            $donationDate = $_POST['donation_date'] ?? '';
             $donationType = $_POST['donation_type'] ?? '';
             $location = $_POST['location'] ?? '';
             $bloodBags = intval($_POST['blood_bags'] ?? 1);
             
-            if ($id <= 0 || empty($donationDate) || empty($donationType) || empty($location)) {
+            if ($id <= 0 || empty($donationType) || empty($location)) {
                 $response = ['status' => 'error', 'message' => 'Data tidak valid'];
                 break;
             }
-            
-            // Validate date
-            if (strtotime($donationDate) > time()) {
-                $response = ['status' => 'error', 'message' => 'Tanggal donasi tidak boleh di masa depan'];
-                break;
-            }
-            
+
             try {
                 // Check if donation exist and belongs to the user
                 $donation = $donationModel->getById($id);
@@ -88,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 $data = [
-                    'donation_date' => $donationDate,
                     'donation_type' => $donationType,
                     'location' => $location,
                     'blood_bags' => $bloodBags
