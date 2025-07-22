@@ -23,25 +23,16 @@ if (!isset($_GET['q']) || empty(trim($_GET['q']))) {
 $query = trim($_GET['q']);
 $apiKey = $_ENV['GEOAPIFY_API_KEY'];
 
-// Add "hospital" keyword if not present
-if (stripos($query, 'hospital') === false && 
-    stripos($query, 'rumah sakit') === false && 
-    stripos($query, 'rs ') === false &&
-    stripos($query, 'klinik') === false) {
-    $query .= ' hospital';
-}
-
 // Indonesia bounding box for better results
 $boundingBox = 'rect:95,-11,141,6'; // West, South, East, North
 
 // Build geoapify API URL
-$geoapifyUrl = 'https://api.geoapify.com/v1/geocode/search?' . http_build_query([
+$geoapifyUrl = 'https://api.geoapify.com/v1/geocode/autocomplete?' . http_build_query([
     'apiKey' => $apiKey,
     'text' => $query,
     'format' => 'json',
-    'limit' => 10,
-    'filter' => $boundingBox,
     'lang' => 'id',
+    'filter' => 'countrycode:id',
     'type' => 'amenity',
 ]);
 
@@ -91,6 +82,8 @@ try {
             if (stripos($displayName, 'hospital') !== false ||
                 stripos($displayName, 'rumah sakit') !== false ||
                 stripos($displayName, 'rs ') !== false ||
+                stripos($displayName, 'rsup ') !== false ||
+                stripos($displayName, 'rsud ') !== false ||
                 stripos($displayName, 'klinik') !== false) {
                 $isHealthcare = true;
             }
