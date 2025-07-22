@@ -53,7 +53,7 @@ class BloodRequest extends BaseModel {
     public function getActiveRequests($limit = null, $offset = null) {
         $sql = "SELECT * FROM {$this->table} 
                 WHERE status = 'Active' 
-                ORDER BY urgency_level DESC, needed_date ASC";
+                ORDER BY created_at ASC";
         
         if ($limit) {
             $sql .= " LIMIT {$limit}";
@@ -71,7 +71,7 @@ class BloodRequest extends BaseModel {
      * Search blood requests
      */
     public function searchRequests($filters = []) {
-        $sql = "SELECT * FROM {$this->table} WHERE status = 'Active' AND needed_date >= CURDATE()";
+        $sql = "SELECT * FROM {$this->table} WHERE status = 'Active'";
         $params = [];
         
         if (!empty($filters['blood_type'])) {
@@ -90,12 +90,7 @@ class BloodRequest extends BaseModel {
             $params[':city'] = "%{$filters['city']}%";
         }
         
-        if (!empty($filters['urgency'])) {
-            $sql .= " AND urgency_level = :urgency";
-            $params[':urgency'] = $filters['urgency'];
-        }
-        
-        $sql .= " ORDER BY urgency_level DESC, needed_date ASC";
+        $sql .= " ORDER BY created_at ASC";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
@@ -109,8 +104,7 @@ class BloodRequest extends BaseModel {
         $sql = "SELECT * FROM {$this->table} 
                 WHERE city = :city 
                 AND status = 'Active' 
-                AND needed_date >= CURDATE() 
-                ORDER BY urgency_level DESC, needed_date ASC";
+                ORDER BY created_at ASC";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':city', $city);
@@ -126,8 +120,7 @@ class BloodRequest extends BaseModel {
                 WHERE blood_type_abo = :abo 
                 AND blood_type_rhesus = :rhesus 
                 AND status = 'Active' 
-                AND needed_date >= CURDATE() 
-                ORDER BY urgency_level DESC, needed_date ASC";
+                ORDER BY created_at ASC";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':abo', $bloodTypeAbo);
@@ -144,21 +137,6 @@ class BloodRequest extends BaseModel {
     }
 
     /**
-     * Get urgent requests
-     */
-    public function getUrgentRequests() {
-        $sql = "SELECT * FROM {$this->table} 
-                WHERE urgency_level IN ('Urgent', 'Emergency') 
-                AND status = 'Active' 
-                AND needed_date >= CURDATE() 
-                ORDER BY urgency_level DESC, needed_date ASC";
-        
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-
-    /**
      * Get requests statistics
      */
     public function getStatistics() {
@@ -169,13 +147,6 @@ class BloodRequest extends BaseModel {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $stats['total_active'] = $stmt->fetch()['total'];
-        
-        // Urgent requests
-        $sql = "SELECT COUNT(*) as total FROM {$this->table} 
-                WHERE status = 'Active' AND urgency_level IN ('Urgent', 'Emergency')";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $stats['urgent'] = $stmt->fetch()['total'];
         
         // Requests by blood type
         $sql = "SELECT CONCAT(blood_type_abo, blood_type_rhesus) as blood_type, COUNT(*) as total 
@@ -191,13 +162,13 @@ class BloodRequest extends BaseModel {
     }
 
     /**
-     * Get expiring requests (needed within 3 days)
+     * Get expired requests
      */
     public function getExpiringRequests() {
         $sql = "SELECT * FROM {$this->table} 
                 WHERE status = 'Active' 
-                AND needed_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY) 
-                ORDER BY needed_date ASC";
+                AND DATE_ADD(DATE(created_at), INTERVAL 5 DAY) <= CURDATE()
+                ORDER BY created_at ASC";
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
@@ -221,8 +192,7 @@ class BloodRequest extends BaseModel {
                     END as city_match
                     FROM {$this->table} 
                     WHERE status = 'Active' 
-                    AND needed_date >= CURDATE() 
-                    ORDER BY blood_type_match DESC, city_match DESC, urgency_level DESC, needed_date ASC";
+                    ORDER BY blood_type_match DESC, city_match DESC, created_at ASC";
             
             $params = [
                 ':userBloodType' => $userBloodType,
@@ -231,9 +201,8 @@ class BloodRequest extends BaseModel {
         } else {
             // Default sorting for non-logged users: urgency then needed_date
             $sql = "SELECT * FROM {$this->table} 
-                    WHERE status = 'Active' 
-                    AND needed_date >= CURDATE() 
-                    ORDER BY urgency_level DESC, needed_date ASC";
+                    WHERE status = 'Active'
+                    ORDER BY created_at ASC";
             $params = [];
         }
         
@@ -265,7 +234,7 @@ class BloodRequest extends BaseModel {
                         ELSE 0 
                     END as city_match
                     FROM {$this->table} 
-                    WHERE status = 'Active' AND needed_date >= CURDATE()";
+                    WHERE status = 'Active'";
             
             $params = [
                 ':userBloodType' => $userBloodType,
@@ -273,7 +242,7 @@ class BloodRequest extends BaseModel {
             ];
         } else {
             // Default query for non-logged users
-            $sql = "SELECT * FROM {$this->table} WHERE status = 'Active' AND needed_date >= CURDATE()";
+            $sql = "SELECT * FROM {$this->table} WHERE status = 'Active'";
             $params = [];
         }
         
@@ -294,16 +263,12 @@ class BloodRequest extends BaseModel {
             $params[':city'] = "%{$filters['city']}%";
         }
         
-        if (!empty($filters['urgency'])) {
-            $sql .= " AND urgency_level = :urgency";
-            $params[':urgency'] = $filters['urgency'];
-        }
         
         // Apply smart sorting
         if (!empty($userBloodType) || !empty($userCity)) {
-            $sql .= " ORDER BY blood_type_match DESC, city_match DESC, urgency_level DESC, needed_date ASC";
+            $sql .= " ORDER BY blood_type_match DESC, city_match DESC, created_at ASC";
         } else {
-            $sql .= " ORDER BY urgency_level DESC, needed_date ASC";
+            $sql .= " ORDER BY created_at ASC";
         }
         
         $stmt = $this->conn->prepare($sql);

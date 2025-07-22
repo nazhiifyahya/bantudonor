@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bloodTypeRhesus = $_POST['blood_type_rhesus'];
     $bloodBagsNeeded = intval($_POST['blood_bags_needed']);
     $donationType = $_POST['donation_type'];
-    $neededDate = $_POST['needed_date'];
     $contactPerson = trim($_POST['contact_person']);
     $contactPhone = trim($_POST['contact_phone']);
     $contactEmail = trim($_POST['contact_email']);
@@ -32,16 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Basic validation
     if (empty($patientName) || empty($hospitalName) || empty($hospitalAddress) || 
         empty($city) || empty($province) || empty($bloodTypeAbo) || empty($bloodTypeRhesus) || 
-        empty($bloodBagsNeeded) || empty($donationType) || empty($neededDate) ||
+        empty($bloodBagsNeeded) || empty($donationType) ||
         empty($contactPerson) || empty($contactPhone) || empty($contactEmail)) {
         $error = 'Semua field wajib diisi. Silakan cari dan pilih rumah sakit untuk melengkapi data lokasi.';
     } elseif (!filter_var($contactEmail, FILTER_VALIDATE_EMAIL)) {
         $error = 'Email tidak valid.';
     } elseif ($bloodBagsNeeded < 1 || $bloodBagsNeeded > 10) {
         $error = 'Jumlah kantong darah harus antara 1-10.';
-    } elseif (strtotime($neededDate) < time()) {
-        $error = 'Tanggal kebutuhan tidak boleh di masa lalu.';
-    } else {
+    }else {
         // Create blood request
         $requestData = [
             'patient_name' => $patientName,
@@ -55,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'blood_type_rhesus' => $bloodTypeRhesus,
             'blood_bags_needed' => $bloodBagsNeeded,
             'donation_type' => $donationType,
-            'needed_date' => $neededDate,
             'contact_person' => $contactPerson,
             'contact_phone' => $contactPhone,
             'contact_email' => $contactEmail
@@ -241,16 +237,6 @@ include 'layout/header.php';
                         </select>
                     </div>
                     
-                    <!-- Needed Date -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Tanggal Dibutuhkan</label>
-                        <input type="date" 
-                               name="needed_date" 
-                               required
-                               min="<?php echo date('Y-m-d'); ?>"
-                               value="<?php echo isset($_POST['needed_date']) ? htmlspecialchars($_POST['needed_date']) : ''; ?>"
-                               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
-                    </div>
                 </div>
 
                 <!-- Contact Information Section -->

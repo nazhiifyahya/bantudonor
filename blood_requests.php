@@ -120,10 +120,6 @@ include 'layout/header.php';
             </div>
             <div class="flex flex-wrap gap-4 text-xs">
                 <div class="flex items-center gap-1">
-                    <div class="w-3 h-3 bg-red-500 rounded"></div>
-                    <span class="text-gray-600">Prioritas Tinggi (Golongan & Lokasi Cocok)</span>
-                </div>
-                <div class="flex items-center gap-1">
                     <div class="w-3 h-3 bg-orange-400 rounded"></div>
                     <span class="text-gray-600">Golongan Darah Cocok</span>
                 </div>
@@ -206,7 +202,7 @@ include 'layout/header.php';
                         <div class="flex justify-start items-center gap-2">
                             <i class="mdi mdi-calendar-month text-red-500"></i>
                             <div class="text-slate-600 text-base font-normal">
-                                <?php echo date('j M Y', strtotime($request['needed_date'])); ?>
+                                <?php echo date('j M Y', strtotime($request['created_at'])); ?>
                             </div>
                         </div>
                         
