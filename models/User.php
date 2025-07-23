@@ -28,6 +28,10 @@ class User extends BaseModel {
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
         
+        if (isset($data['email'])) {
+            $data['unique_token'] = hash('sha256', $data['email']);
+        }
+
         return $this->create($data);
     }
 
