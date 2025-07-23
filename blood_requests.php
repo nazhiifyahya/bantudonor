@@ -57,10 +57,10 @@ include 'layout/header.php';
 
     <!-- Page Header -->
     <section class="bg-red-500">
-        <div class="w-full px-20 py-16 flex flex-col justify-center items-center gap-4 max-w-[1280px] relative mx-auto">
-            <h1 class="text-slate-50 text-4xl font-bold">Daftar Kebutuhan Darah</h1>
+        <div class="w-full px-4 sm:px-8 md:px-12 lg:px-20 py-12 flex flex-col justify-center items-center gap-4 max-w-[1280px] relative mx-auto">
+            <h1 class="text-slate-50 text-3xl sm:text-4xl font-bold text-center">Daftar Kebutuhan Darah</h1>
             <?php if (isset($_SESSION['user_id']) && (!empty($userBloodType) || !empty($userCity)) && empty($_GET['blood_type']) && empty($_GET['city']) && $showAll !== '1'): ?>
-            <div class="text-slate-50 text-base font-normal text-center">
+            <div class="text-slate-50 text-sm sm:text-base font-normal text-center px-2">
                 Filter otomatis disesuaikan dengan 
                 <?php if (!empty($userBloodType) && !empty($userCity)): ?>
                     golongan darah Anda: <span class="font-semibold"><?php echo htmlspecialchars($userBloodType); ?></span> 
@@ -77,10 +77,10 @@ include 'layout/header.php';
 
     <!-- Search and Content -->
     <section class="bg-slate-50">
-        <div class="w-full px-20 py-16 flex flex-col justify-center items-start gap-10 max-w-[1280px] relative mx-auto">
+        <div class="w-full px-4 sm:px-8 md:px-12 lg:px-20 py-12 flex flex-col justify-center items-start gap-8 max-w-[1280px] relative mx-auto">
         <!-- Search Form -->
-        <form method="GET" class="w-full px-5 py-4 bg-white rounded-lg flex justify-start items-start gap-2.5">
-            <select name="blood_type" class="w-64 px-4 py-3 rounded-lg border border-slate-300">
+        <form method="GET" class="w-full px-4 py-4 bg-white rounded-lg flex flex-wrap sm:flex-nowrap gap-3 justify-start items-center">
+            <select name="blood_type" class="w-full sm:w-64 px-4 py-3 rounded-lg border border-slate-300">
                 <option value="all">Semua Golongan Darah</option>
                 <?php 
                 $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -96,9 +96,9 @@ include 'layout/header.php';
                    name="city" 
                    value="<?php echo htmlspecialchars($city); ?>"
                    placeholder="Cari kota/kabupaten" 
-                   class="flex-1 px-4 py-3 rounded-lg border border-slate-300">
+                   class="flex-grow min-w-[150px] px-4 py-3 rounded-lg border border-slate-300">
             
-            <button type="submit" class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-base font-semibold">
+            <button type="submit" class="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition w-full sm:w-auto">
                 Cari
             </button>
             
@@ -111,7 +111,7 @@ include 'layout/header.php';
 
         <!-- Sorting Info -->
         <?php if (isset($_SESSION['user_id']) && (!empty($userBloodType) || !empty($userCity))): ?>
-        <div class="w-full px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div class="w-full px-4 py-3 flex flex-col gap-6 bg-blue-50 border border-blue-200 rounded-lg">
             <div class="flex items-center gap-2 mb-2">
                 <i class="mdi mdi-sort text-blue-600"></i>
                 <span class="text-blue-800 text-sm font-medium">
