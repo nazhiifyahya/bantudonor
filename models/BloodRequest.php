@@ -167,7 +167,7 @@ class BloodRequest extends BaseModel {
     public function getExpiringRequests() {
         $sql = "SELECT * FROM {$this->table} 
                 WHERE status = 'Active' 
-                AND DATE_ADD(DATE(created_at), INTERVAL 5 DAY) <= CURDATE()
+                AND DATE_ADD(DATE(created_at), INTERVAL 5 DAY) = CURDATE()
                 ORDER BY created_at ASC";
         
         $stmt = $this->conn->prepare($sql);
