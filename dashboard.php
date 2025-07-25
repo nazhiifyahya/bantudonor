@@ -2,6 +2,7 @@
 session_start();
 require_once 'models/User.php';
 require_once 'models/Donation.php';
+require_once 'config/envloader.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -100,6 +101,20 @@ include 'layout/header.php';
                         <p class="text-gray-900 text-sm"><?php echo htmlspecialchars($user['address']); ?></p>
                     </div>
                     <?php endif; ?>
+                    <div>
+                        <span class="text-slate-600 text-sm">Telegram:</span>
+                        <?php if (!empty($user['telegram_chat_id'])): ?>
+                            <p class="text-gray-900 text-sm">Terhubung</p>
+                        <?php else: ?>
+                            <a href="https://t.me/<?= $_ENV['TELEGRAM_BOT_USERNAME'] ?>?start=<?= urlencode($user['unique_token']) ?>" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center bg-[#0088cc] hover:bg-[#006699] text-white font-semibold px-5 py-3 rounded-lg shadow-md transition-colors duration-300"
+                            >
+                                Hubungkan
+                            </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 
