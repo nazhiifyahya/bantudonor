@@ -150,5 +150,13 @@ class User extends BaseModel {
         $stmt->execute($params);
         return $stmt->fetchAll();
     }
+
+    public function getUserByUniqueToken($token) {
+        $sql = "SELECT * FROM {$this->table} WHERE unique_token = :token";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
 }
 ?>
