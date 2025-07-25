@@ -1,0 +1,22 @@
+RewriteEngine On
+
+# Redirect index.html to home.php
+RewriteRule ^index\.html$ home.php [R=301,L]
+
+# Remove .php extension for cleaner URLs
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
+# Enable error reporting for development
+php_flag display_errors On
+php_value error_reporting E_ALL
+
+# Tangkap pola /{token}/webhook lalu arahkan ke webhook.php dengan query parameter
+RewriteRule ^([^/]+)/telegram_webhook$ handler/telegram_webhook.php?token=$1[L,QSA]
+
+# Jika ada akses langsung /webhook tanpa token, lempar error 404
+RewriteRule ^telegram_webhook$ - [R=404,L]
+
+# Set default timezone
+php_value date.timezone "Asia/Jakarta"
