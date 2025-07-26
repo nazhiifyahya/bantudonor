@@ -67,7 +67,7 @@ abstract class BaseModel {
         
         foreach ($data as $key => $value) {
             if ($key == 'location' && !is_null($value)) {
-                $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                $stmt->bindValue(':location', $value);
             } else {
                 $stmt->bindValue(':' . $key, $value);
             }
@@ -100,7 +100,7 @@ abstract class BaseModel {
         
         foreach ($data as $key => $value) {
             if ($key == 'location' && !is_null($value)) {
-                $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+                $stmt->bindValue(':location', $value);
             } else {
                 $stmt->bindValue(':' . $key, $value);
             }
