@@ -183,7 +183,7 @@ class User extends BaseModel {
         $radius_meter = 20000 // Default radius in meters
     ) {
         $sql = "SELECT 
-                u.chat_id
+                u.telegram_chat_id
                 FROM users u
                 JOIN blood_requests br ON br.id = :blood_request_id
                 WHERE ST_Distance_Sphere(u.location, br.location) <= :radius_meter;
