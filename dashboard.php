@@ -221,7 +221,7 @@ include 'layout/header.php';
                         </button>
                     </div>
                     
-                    <form id="editProfileForm" method="POST" action="update_profile.php">
+                    <form id="editProfileForm" method="POST" action="handler/update_profile.php">
                         <!-- Full Name -->
                         <div class="mb-4">
                             <label class="block text-slate-600 text-sm font-medium mb-2">Nama Lengkap</label>
