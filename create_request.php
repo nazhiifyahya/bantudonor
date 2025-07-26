@@ -2,6 +2,7 @@
 session_start();
 require_once 'models/BloodRequest.php';
 require_once 'models/User.php';
+require_once 'config/envloader.php';
 
 use Telegram\Bot\Api;
 
@@ -63,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $requestId = $bloodRequestModel->createRequest($requestData);
         if ($requestId) {
             $suitableUser = $userModel->getAllUsersTelegramChatIdsByProximity($requestId);
-            $telegram = new Api('YOUR BOT TOKEN');
+            $telegram = new Api($_ENV['TELEGRAM_BOT_TOKEN']);
             foreach ($suitableUser as $user) {
                 $telegram->sendMessage([
                     'chat_id' => $user['telegram_chat_id'],
