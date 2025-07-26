@@ -152,5 +152,12 @@ abstract class BaseModel {
     public function __destruct() {
         $this->db->closeConnection();
     }
+
+    /** 
+     * Convert coordinates to point
+     */
+    public function coordinatesToPoint($latitude, $longitude) {
+        return "POINT({$longitude} {$latitude})";
+    }
 }
 ?>
