@@ -17,7 +17,7 @@ $currentPage = 'dashboard';
 $userModel = new User();
 $donationModel = new Donation();
 
-$user = $userModel->getById($_SESSION['user_id']);
+$user = $userModel->getUserById($_SESSION['user_id']);
 $userDonations = $donationModel->getDonationsByUser($_SESSION['user_id']);
 $donationStats = $donationModel->getUserDonationStats($_SESSION['user_id']);
 

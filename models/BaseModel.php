@@ -57,10 +57,20 @@ abstract class BaseModel {
         $columnList = implode(', ', $columns);
         
         $sql = "INSERT INTO {$this->table} ({$columnList}) VALUES ({$placeholders})";
+
+        if (isset($data['location'])) {
+            // Ganti placeholder dan nilai bind dengan format ST_GeomFromText untuk MySQL
+            $sql = str_replace(':location', "ST_GeomFromText(:location)", $sql);
+        }
+
         $stmt = $this->conn->prepare($sql);
         
         foreach ($data as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
+            if ($key == 'location' && !is_null($value)) {
+                $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(':' . $key, $value);
+            }
         }
         
         if ($stmt->execute()) {
@@ -80,10 +90,20 @@ abstract class BaseModel {
         $setClause = implode(', ', $setParts);
         
         $sql = "UPDATE {$this->table} SET {$setClause} WHERE id = :id";
+
+        if (isset($data['location'])) {
+            // Ganti placeholder dan nilai bind dengan format ST_GeomFromText untuk MySQL
+            $sql = str_replace(':location', "ST_GeomFromText(:location)", $sql);
+        }
+
         $stmt = $this->conn->prepare($sql);
         
         foreach ($data as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
+            if ($key == 'location' && !is_null($value)) {
+                $stmt->bindValue(':location', $value, PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue(':' . $key, $value);
+            }
         }
         $stmt->bindParam(':id', $id);
         
@@ -157,7 +177,11 @@ abstract class BaseModel {
      * Convert coordinates to point
      */
     public function coordinatesToPoint($latitude, $longitude) {
-        return "POINT({$longitude} {$latitude})";
+        if ($latitude === null || $longitude === null) {
+            return null;
+        }
+        // Note MySQL POINT uses (x, y) = (longitude, latitude)
+        return sprintf('POINT(%F %F)', $longitude, $latitude);
     }
 }
 ?>

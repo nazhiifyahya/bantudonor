@@ -9,6 +9,17 @@ class User extends BaseModel {
     protected $table = 'users';
 
     /**
+     * Get user by ID
+     */
+    public function getUserById($id) {
+        $sql = "SELECT *, ST_Y(location) AS latitude, ST_X(location) AS longitude FROM {$this->table} WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    /**
      * Get user by email
      */
     public function getUserByEmail($email) {
