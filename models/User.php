@@ -177,5 +177,24 @@ class User extends BaseModel {
         $stmt->execute();
         return $stmt->fetch();
     }
+
+    public function getAllUsersTelegramChatIdsByProximity (
+        $blood_request_id, 
+        $radius_meter = 20000 // Default radius in meters
+    ) {
+        $sql = "SELECT 
+                u.chat_id
+                FROM users u
+                JOIN blood_requests br ON br.id = :blood_request_id
+                WHERE ST_Distance_Sphere(u.location, br.location) <= :radius_meter;
+                ";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':blood_request_id', $blood_request_id);
+        $stmt->bindParam(':radius_meter', $radius_meter);
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
+    }
 }
 ?>
