@@ -48,11 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'phone' => $phone,
                 'blood_type_abo' => $bloodTypeAbo,
                 'blood_type_rhesus' => $bloodTypeRhesus,
+                'location' => $userModel->coordinatesToPoint($latitude, $longitude),
                 'address' => $address,
                 'city' => $city,
                 'province' => $province,
-                'latitude' => $latitude,
-                'longitude' => $longitude
             ];
             
             $userId = $userModel->createUser($userData);
