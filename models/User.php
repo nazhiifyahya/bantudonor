@@ -158,5 +158,13 @@ class User extends BaseModel {
         $stmt->execute();
         return $stmt->fetch();
     }
+
+    public function getUserByTelegramChatId($chatId) {
+        $sql = "SELECT * FROM {$this->table} WHERE telegram_chat_id = :chatId";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':chatId', $chatId);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
 }
 ?>
