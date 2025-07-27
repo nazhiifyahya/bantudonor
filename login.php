@@ -9,6 +9,12 @@ $currentPage = 'login';
 
 $error = '';
 
+if (!empty($_SESSION['user_id'])){
+        // User is already logged in, redirect to dashboard
+        header('Location: dashboard.php');
+        exit;
+    }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userModel = new User();
     
