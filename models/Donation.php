@@ -44,14 +44,6 @@ class Donation extends BaseModel {
         $stmt->execute();
         $stats['total_donations'] = $stmt->fetch()['total'];
         
-        // Total blood bags donated
-        $sql = "SELECT SUM(blood_bags) as total FROM {$this->table} 
-                WHERE user_id = :user_id";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':user_id', $userId);
-        $stmt->execute();
-        $stats['total_blood_bags'] = $stmt->fetch()['total'] ?: 0;
-        
         // Last donation date
         $sql = "SELECT MAX(donation_date) as last_date FROM {$this->table} 
                 WHERE user_id = :user_id";

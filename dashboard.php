@@ -127,10 +127,6 @@ include 'layout/header.php';
                         <p class="text-slate-600">Total Donasi</p>
                     </div>
                     <div class="p-6 bg-white rounded-lg shadow text-center">
-                        <h3 class="text-2xl font-bold text-red-500"><?php echo $donationStats['total_blood_bags']; ?></h3>
-                        <p class="text-slate-600">Kantong Darah</p>
-                    </div>
-                    <div class="p-6 bg-white rounded-lg shadow text-center">
                         <h3 class="text-2xl font-bold text-red-500">
                             <?php 
                             if ($donationStats['last_donation_date']) {
@@ -437,18 +433,6 @@ include 'layout/header.php';
                                    name="location" 
                                    required
                                    placeholder="Contoh: PMI Jakarta Pusat, RS Cipto Mangunkusumo"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
-                        </div>
-                        
-                        <!-- Jumlah Kantong -->
-                        <div class="mb-6">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Jumlah Kantong</label>
-                            <input type="number" 
-                                   id="bloodBags"
-                                   name="blood_bags" 
-                                   min="1"
-                                   max="10"
-                                   value="1"
                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
                         </div>
                         
