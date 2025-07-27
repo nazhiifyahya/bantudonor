@@ -1,16 +1,16 @@
 <?php
     session_start();
-    require_once 'models/User.php';
+    require_once '../models/User.php';
 
     // Check if user is logged in
     if (!isset($_SESSION['user_id'])) {
-        header('Location: login.php');
+        header('Location: ../login.php');
         exit;
     }
 
     // Check if form was submitted
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        header('Location: dashboard.php');
+        header('Location: ../dashboard.php');
         exit;
     }
 
@@ -52,6 +52,12 @@
         
         if (empty($_POST['latitude']) || empty($_POST['longitude'])) {
             $errors[] = 'Lokasi harus dipilih di peta atau menggunakan GPS';
+        } else {
+            $location = $userModel->coordinatesToPoint(
+                $_POST['latitude'], 
+                $_POST['longitude']
+            );
+            echo $location;
         }
         
         // Check if email is already used by another user
@@ -61,7 +67,6 @@
                 $errors[] = 'Email sudah digunakan oleh pengguna lain';
             }
         }
-        
         // If no errors, update the profile
         if (empty($errors)) {
             $updateData = [
@@ -70,19 +75,17 @@
                 'email' => trim($_POST['email']),
                 'blood_type_abo' => $_POST['blood_type_abo'],
                 'blood_type_rhesus' => $_POST['blood_type_rhesus'],
-                'location' => $userModel->coordinatesToPoint(
-                    (float)$_POST['latitude'], 
-                    (float)$_POST['longitude']
-                ),
+                'location' => $location,
                 'phone' => trim($_POST['phone']),
                 'province' => trim($_POST['province']),
                 'city' => trim($_POST['city']),
                 'address' => trim($_POST['address'] ?? ''),
             ];
+            echo $updateData;
             
             if ($userModel->updateProfile($updateData)) {
                 $_SESSION['success_message'] = 'Profil berhasil diperbarui!';
-                header('Location: dashboard.php');
+                header('Location: ../dashboard.php');
                 exit;
             } else {
                 $errors[] = 'Gagal memperbarui profil. Silakan coba lagi.';
@@ -100,6 +103,6 @@
         $_SESSION['form_data'] = $_POST;
     }
 
-    header('Location: dashboard.php');
+    header('Location: ../dashboard.php');
     exit;
 ?>
