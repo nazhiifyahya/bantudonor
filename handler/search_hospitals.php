@@ -61,43 +61,16 @@ try {
         exit;
     }
     
-    // Process and filter results
+    // Process results
     $hospitals = [];
     
     foreach ($geoapifyData['results'] as $result) {
-        // Filter for healthcare facilities
-        $isHealthcare = false;
-        
-        // Check if there are category tags
-        $category = $result["category"] ?? '';
-        
-        // Check if category contains healthcare keywords
-        if (stripos('category', 'healthcare') !== false){
-            $isHealthcare = true;
-        }
-    
-        // Also check display name for hospital keywords
-        if (!$isHealthcare) {
-            $displayName = strtolower($result["name"]);
-            if (stripos($displayName, 'hospital') !== false ||
-                stripos($displayName, 'rumah sakit') !== false ||
-                stripos($displayName, 'rs ') !== false ||
-                stripos($displayName, 'rsup ') !== false ||
-                stripos($displayName, 'rsud ') !== false ||
-                stripos($displayName, 'klinik') !== false) {
-                $isHealthcare = true;
-            }
-        }
-        
-        if ($isHealthcare) {
-            // Extract address components
-            $address = $result["address_line2"] ?? [];
+        $address = $result["address_line2"] ?? [];
             
-            $province = $result["state"] ?? '';
+        $province = $result["state"] ?? '';
             
-            $city = $result["county"] ?? '';
-            
-            $hospitals[] = [
+        $city = $result["county"] ?? '';
+        $hospitals[] = [
                 'name' => $result["name"],
                 'address' => $address,
                 'latitude' => (float)$result["lat"],
@@ -105,7 +78,6 @@ try {
                 'city' => $city,
                 'province' => $province,
             ];
-        }
     }
     echo json_encode([
         'status' => 'success',
