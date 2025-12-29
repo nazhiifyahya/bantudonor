@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Validate input
             $donationType = $_POST['donation_type'] ?? '';
             $location = $_POST['location'] ?? '';
-            $bloodBags = intval($_POST['blood_bags'] ?? 1);
+            $donationDate = $_POST['donation_date'] ?? date('Y-m-d');
             
-            if (empty($donationType) || empty($location)) {
+            if (empty($donationType) || empty($location) || empty($donationDate)) {
                 $response = ['status' => 'error', 'message' => 'Semua field wajib diisi'];
                 break;
             }
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'user_id' => $_SESSION['user_id'],
                     'donation_type' => $donationType,
                     'location' => $location,
-                    'blood_bags' => $bloodBags,
+                    'donation_date' => $donationDate,
                 ];
                 
                 // Debug: log the data being inserted
@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = intval($_POST['id'] ?? 0);
             $donationType = $_POST['donation_type'] ?? '';
             $location = $_POST['location'] ?? '';
-            $bloodBags = intval($_POST['blood_bags'] ?? 1);
+            $donationDate = $_POST['donation_date'] ?? date('Y-m-d');
             
-            if ($id <= 0 || empty($donationType) || empty($location)) {
+            if ($id <= 0 || empty($donationType) || empty($location) || empty($donationDate)) {
                 $response = ['status' => 'error', 'message' => 'Data tidak valid'];
                 break;
             }
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $data = [
                     'donation_type' => $donationType,
                     'location' => $location,
-                    'blood_bags' => $bloodBags
+                    'donation_date' => $donationDate
                 ];
                 
                 $result = $donationModel->update($id, $data);

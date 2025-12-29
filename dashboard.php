@@ -158,13 +158,10 @@ include 'layout/header.php';
                             <div class="border-l-4 border-red-500 pl-4">
                                 <div class="flex justify-between items-start">
                                     <div class="flex-1">
-                                        
+                                        <p class="text-gray-900 font-semibold"><?php echo htmlspecialchars($donation['donation_type']); ?></p>
                                         <p class="text-slate-600"><?php echo htmlspecialchars($donation['location']); ?></p>
-                                        
                                         <p class="text-sm text-slate-500">
-                                            <?php echo date('d M Y', strtotime($donation['donation_date'])); ?> - 
-                                            <?php echo $donation['blood_bags']; ?> kantong - 
-                                            <?php echo htmlspecialchars($donation['donation_type']); ?>
+                                            <?php echo date('d M Y', strtotime($donation['donation_date'])); ?>
                                         </p>
                                     </div>
                                     <div class="flex items-center gap-2">
@@ -667,7 +664,6 @@ include 'layout/header.php';
             
             // Reset form
             document.getElementById('donationForm').reset();
-            document.getElementById('bloodBags').value = '1';
             
             document.getElementById('donationModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -698,7 +694,6 @@ include 'layout/header.php';
                     document.getElementById('donationDate').value = data.data.donation_date;
                     document.getElementById('donationType').value = data.data.donation_type;
                     document.getElementById('donationLocation').value = data.data.location || '';
-                    document.getElementById('bloodBags').value = data.data.blood_bags;
                     document.getElementById('donationSubmitBtn').textContent = 'Update';
                     
                     document.getElementById('donationModal').classList.remove('hidden');
