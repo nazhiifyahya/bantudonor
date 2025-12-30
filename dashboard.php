@@ -117,16 +117,18 @@ include 'layout/header.php';
                     </div>
                     <div>
                         <span class="text-slate-600 text-sm">WhatsApp:</span>
-                        <?php if (!empty($user['whatsapp_number'])): ?>
-                            <p class="text-gray-900 text-sm">Terhubung</p>
+                        <?php if ($user['whatsapp_notification'] === 'ya'): ?>
+                            <button onclick="disconnectWhatsApp()" 
+                            class="inline-flex items-center bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition-colors duration-300"
+                            >
+                                Batal Hubungkan
+                            </button>
                         <?php else: ?>
-                            <a href="https://wa.me/<?= $_ENV['FONNTE_NUMBER'] ?>?text=<?= urlencode($user['unique_token']) ?>" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
+                            <button onclick="connectWhatsApp()" 
                             class="inline-flex items-center bg-[#25D366] hover:bg-[#1da851] text-white font-semibold px-5 py-3 rounded-lg shadow-md transition-colors duration-300"
                             >
                                 Hubungkan
-                            </a>
+                            </button>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -791,6 +793,21 @@ include 'layout/header.php';
                 submitBtn.textContent = originalText;
             });
         });
+        
+        // WhatsApp connection function
+        function connectWhatsApp() {
+            
+            setTimeout(function() {
+                window.location.href = 'handler/activate_whatsapp.php';
+            }, 1000);
+        }
+        
+        // WhatsApp disconnection function
+        function disconnectWhatsApp() {
+            if (confirm('Apakah Anda yakin ingin membatalkan notifikasi WhatsApp?')) {
+                window.location.href = 'handler/deactivate_whatsapp.php';
+            }
+        }
     </script>
 
 <?php 
