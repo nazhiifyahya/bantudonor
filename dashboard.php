@@ -115,6 +115,20 @@ include 'layout/header.php';
                             </a>
                         <?php endif; ?>
                     </div>
+                    <div>
+                        <span class="text-slate-600 text-sm">WhatsApp:</span>
+                        <?php if (!empty($user['whatsapp_number'])): ?>
+                            <p class="text-gray-900 text-sm">Terhubung</p>
+                        <?php else: ?>
+                            <a href="https://wa.me/<?= $_ENV['FONNTE_NUMBER'] ?>?text=<?= urlencode($user['unique_token']) ?>" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center bg-[#25D366] hover:bg-[#1da851] text-white font-semibold px-5 py-3 rounded-lg shadow-md transition-colors duration-300"
+                            >
+                                Hubungkan
+                            </a>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
 
