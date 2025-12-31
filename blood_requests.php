@@ -102,11 +102,9 @@ include 'layout/header.php';
                 Cari
             </button>
             
-            <?php if (isset($_SESSION['user_id']) && (!empty($userBloodType) || !empty($userCity)) && ($bloodType !== 'all' || !empty($city))): ?>
             <a href="blood_requests.php?show_all=1" class="px-8 py-3 rounded-full bg-red-500 text-white text-base font-semibold hover:bg-red-600">
                 Lihat Semua
             </a>
-            <?php endif; ?>
         </form>
 
         <!-- Sorting Info -->
