@@ -3,6 +3,7 @@ session_start();
 require_once 'models/BloodRequest.php';
 require_once 'models/User.php';
 require_once 'config/envloader.php';
+require_once 'config/whatsapp.php';
 
 use Telegram\Bot\Api;
 
@@ -63,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $requestId = $bloodRequestModel->createRequest($requestData);
         if ($requestId) {
+            // Send Telegram notifications
             $suitableUser = $userModel->getAllUsersTelegramChatIdsByProximity($requestId);
             $telegram = new Api($_ENV['TELEGRAM_BOT_TOKEN']);
             foreach ($suitableUser as $user) {
@@ -79,6 +81,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               "Silakan cek aplikasi untuk detail lebih lanjut."
                 ]);
             }
+            
+            // Send WhatsApp notifications
+            $whatsappUsers = $userModel->getUsersWithWhatsAppByProximity($requestId);
+            if (!empty($whatsappUsers)) {
+                $phoneNumbers = array_column($whatsappUsers, 'phone');
+                
+                $whatsappMessage = "*PERMOHONAN DONOR DARAH BARU*\n\n" .
+                                  "Nama Pasien: *$patientName*\n" .
+                                  "Rumah Sakit: *$hospitalName*\n" .
+                                  "Alamat: $hospitalAddress\n" .
+                                  "Kota: $city, $province\n\n" .
+                                  "Golongan Darah: *$bloodTypeAbo$bloodTypeRhesus*\n" .
+                                  "Jumlah Kantong: *$bloodBagsNeeded*\n" .
+                                  "Jenis Donor: $donationType\n\n" .
+                                  "Narahubung:\n" .
+                                  "Nama: $contactPerson\n" .
+                                  "Telepon: $contactPhone\n" .
+                                  "Email: $contactEmail\n\n" .
+                                  "Segera hubungi narahubung jika Anda bersedia mendonor!";
+                
+                $whatsappResponse = sendWhatsAppMessage($phoneNumbers, $whatsappMessage);
+            }
+            
             $message = 'Permohonan berhasil diajukan!';
             // Clear form data
             $_POST = [];

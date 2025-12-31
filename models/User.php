@@ -186,7 +186,9 @@ class User extends BaseModel {
                 u.telegram_chat_id
                 FROM users u
                 JOIN blood_requests br ON br.id = :blood_request_id
-                WHERE ST_Distance_Sphere(u.location, br.location) <= :radius_meter;
+                WHERE u.blood_type_abo = br.blood_type_abo
+                AND u.blood_type_rhesus = br.blood_type_rhesus 
+                AND ST_Distance_Sphere(u.location, br.location) <= :radius_meter;
                 ";
         
         $stmt = $this->conn->prepare($sql);
@@ -196,5 +198,29 @@ class User extends BaseModel {
         
         return $stmt->fetchAll();
     }
+    
+    /**
+     * Get all users with WhatsApp notification enabled by blood request proximity
+     */
+    public function getUsersWithWhatsAppByProximity(
+        $blood_request_id,
+        $radius_meter = 20000
+    ) {
+        $sql = "SELECT 
+                u.phone
+                FROM users u
+                JOIN blood_requests br ON br.id = :blood_request_id
+                WHERE u.whatsapp_notification = 'ya'
+                AND u.phone IS NOT NULL
+                AND u.blood_type_abo = br.blood_type_abo
+                AND u.blood_type_rhesus = br.blood_type_rhesus
+                AND ST_Distance_Sphere(u.location, br.location) <= :radius_meter";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':blood_request_id', $blood_request_id);
+        $stmt->bindParam(':radius_meter', $radius_meter);
+        $stmt->execute();
+        
+        return $stmt->fetchAll();
+    }
 }
-?>
