@@ -64,44 +64,129 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $requestId = $bloodRequestModel->createRequest($requestData);
         if ($requestId) {
+            // Get the created request to get unique_token
+            $createdRequest = $bloodRequestModel->getById($requestId);
+            $editLink = $_ENV['WEBSITE_DOMAIN'] . '/edit_request.php?token=' . $createdRequest['unique_token'];
+            
+            // Send email with edit link
+            try {
+                $emailSubject = "Permohonan Donor Darah Berhasil Diajukan - BantuDonor";
+                $emailBody = "
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background-color: #ef4444; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+                        .content { background-color: #f9fafb; padding: 30px; border: 1px solid #e5e7eb; }
+                        .button { display: inline-block; padding: 12px 30px; background-color: #ef4444; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+                        .info-box { background-color: white; padding: 15px; margin: 15px 0; border-left: 4px solid #ef4444; }
+                        .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h1>BantuDonor</h1>
+                            <p>Permohonan Donor Darah Berhasil Diajukan</p>
+                        </div>
+                        <div class='content'>
+                            <h2>Terima kasih atas pengajuan permohonan!</h2>
+                            <p>Permohonan donor darah Anda telah berhasil diajukan dengan detail sebagai berikut:</p>
+                            
+                            <div class='info-box'>
+                                <strong>Nama Pasien:</strong> $patientName<br>
+                                <strong>Rumah Sakit:</strong> $hospitalName<br>
+                                <strong>Golongan Darah:</strong> $bloodTypeAbo$bloodTypeRhesus<br>
+                                <strong>Jumlah Kantong:</strong> $bloodBagsNeeded<br>
+                                <strong>Jenis Donor:</strong> $donationType<br>
+                                <strong>Narahubung:</strong> $contactPerson ($contactPhone)
+                            </div>
+                            
+                            <p>Sistem kami akan mengirimkan notifikasi kepada para pendonor yang sesuai dengan kebutuhan Anda.</p>
+                            
+                            <h3>Edit Permohonan</h3>
+                            <p>Jika Anda perlu mengubah data permohonan, silakan klik tombol di bawah ini:</p>
+                            
+                            <center>
+                                <a href='$editLink' class='button'>Edit Permohonan</a>
+                            </center>
+                            
+                            <p style='color: #6b7280; font-size: 14px; margin-top: 20px;'>
+                                <strong>Catatan:</strong> Link di atas hanya dapat digunakan selama permohonan masih aktif. 
+                                Simpan email ini untuk keperluan edit di kemudian hari.
+                            </p>
+                        </div>
+                        <div class='footer'>
+                            <p>Email ini dikirim secara otomatis, mohon tidak membalas email ini.</p>
+                            <p>&copy; 2025 BantuDonor. All rights reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                ";
+                
+                // Send email using PHP mail()
+                $headers = "MIME-Version: 1.0" . "\r\n";
+                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+                $headers .= "From: BantuDonor <noreply@bantudonor.online>" . "\r\n";
+                
+                mail($contactEmail, $emailSubject, $emailBody, $headers);
+            } catch (Exception $e) {
+                // Log error but don't stop the process
+                error_log("Email sending error: " . $e->getMessage());
+            }
+            
             // Send Telegram notifications
-            $suitableUser = $userModel->getAllUsersTelegramChatIdsByProximity($requestId);
-            $telegram = new Api($_ENV['TELEGRAM_BOT_TOKEN']);
-            foreach ($suitableUser as $user) {
-                $telegram->sendMessage([
-                    'chat_id' => $user['telegram_chat_id'],
-                    'text' => "Permohonan baru telah diajukan:\n\n" .
-                              "Nama Pasien: $patientName\n" .
-                              "Rumah Sakit: $hospitalName\n" .
-                              "Alamat: $hospitalAddress\n" .
-                              "Golongan Darah: $bloodTypeAbo$bloodTypeRhesus\n" .
-                              "Jumlah Kantong: $bloodBagsNeeded\n" .
-                              "Jenis Donor: $donationType\n" .
-                              "Narahubung: $contactPerson ($contactPhone, $contactEmail)\n\n" .
-                              "Silakan cek aplikasi untuk detail lebih lanjut."
-                ]);
+            try {
+                $suitableUser = $userModel->getAllUsersTelegramChatIdsByProximity($requestId);
+                if (!empty($suitableUser)) {
+                    $telegram = new Api($_ENV['TELEGRAM_BOT_TOKEN']);
+                    foreach ($suitableUser as $user) {
+                        $telegram->sendMessage([
+                            'chat_id' => $user['telegram_chat_id'],
+                            'text' => "Permohonan baru telah diajukan:\n\n" .
+                                      "Nama Pasien: $patientName\n" .
+                                      "Rumah Sakit: $hospitalName\n" .
+                                      "Alamat: $hospitalAddress\n" .
+                                      "Golongan Darah: $bloodTypeAbo$bloodTypeRhesus\n" .
+                                      "Jumlah Kantong: $bloodBagsNeeded\n" .
+                                      "Jenis Donor: $donationType\n" .
+                                      "Narahubung: $contactPerson ($contactPhone, $contactEmail)\n\n" .
+                                      "Silakan cek aplikasi untuk detail lebih lanjut."
+                        ]);
+                    }
+                }
+            } catch (Exception $e) {
+                // Log error but don't stop the process
+                error_log("Telegram notification error: " . $e->getMessage());
             }
             
             // Send WhatsApp notifications
-            $whatsappUsers = $userModel->getUsersWithWhatsAppByProximity($requestId);
-            if (!empty($whatsappUsers)) {
-                $phoneNumbers = array_column($whatsappUsers, 'phone');
-                
-                $whatsappMessage = "*PERMOHONAN DONOR DARAH BARU*\n\n" .
-                                  "Nama Pasien: *$patientName*\n" .
-                                  "Rumah Sakit: *$hospitalName*\n" .
-                                  "Alamat: $hospitalAddress\n" .
-                                  "Kota: $city, $province\n\n" .
-                                  "Golongan Darah: *$bloodTypeAbo$bloodTypeRhesus*\n" .
-                                  "Jumlah Kantong: *$bloodBagsNeeded*\n" .
-                                  "Jenis Donor: $donationType\n\n" .
-                                  "Narahubung:\n" .
-                                  "Nama: $contactPerson\n" .
-                                  "Telepon: $contactPhone\n" .
-                                  "Email: $contactEmail\n\n" .
-                                  "Segera hubungi narahubung jika Anda bersedia mendonor!";
-                
-                $whatsappResponse = sendWhatsAppMessage($phoneNumbers, $whatsappMessage);
+            try {
+                $whatsappUsers = $userModel->getUsersWithWhatsAppByProximity($requestId);
+                if (!empty($whatsappUsers)) {
+                    $phoneNumbers = array_column($whatsappUsers, 'phone');
+                    
+                    $whatsappMessage = "*PERMOHONAN DONOR DARAH BARU*\n\n" .
+                                      "Nama Pasien: *$patientName*\n" .
+                                      "Rumah Sakit: *$hospitalName*\n" .
+                                      "Alamat: $hospitalAddress\n" .
+                                      "Kota: $city, $province\n\n" .
+                                      "Golongan Darah: *$bloodTypeAbo$bloodTypeRhesus*\n" .
+                                      "Jumlah Kantong: *$bloodBagsNeeded*\n" .
+                                      "Jenis Donor: $donationType\n\n" .
+                                      "Narahubung:\n" .
+                                      "Nama: $contactPerson\n" .
+                                      "Telepon: $contactPhone\n" .
+                                      "Email: $contactEmail\n\n" .
+                                      "Segera hubungi narahubung jika Anda bersedia mendonor!";
+                    
+                    $whatsappResponse = sendWhatsAppMessage($phoneNumbers, $whatsappMessage);
+                }
+            } catch (Exception $e) {
+                // Log error but don't stop the process
+                error_log("WhatsApp notification error: " . $e->getMessage());
             }
             
             $message = 'Permohonan berhasil diajukan!';

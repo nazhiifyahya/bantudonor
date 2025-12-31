@@ -44,6 +44,7 @@ class BloodRequest extends BaseModel {
      */
     public function createRequest($data) {
         $data['request_code'] = $this->generateRequestCode();
+        $data['unique_token'] = hash('sha256', $data['request_code'] . microtime());
         return $this->create($data);
     }
 
@@ -173,6 +174,17 @@ class BloodRequest extends BaseModel {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Get blood request by unique token
+     */
+    public function getByToken($token) {
+        $sql = "SELECT * FROM {$this->table} WHERE unique_token = :token";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        return $stmt->fetch();
     }
 
     /**
