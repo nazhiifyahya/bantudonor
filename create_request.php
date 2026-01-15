@@ -6,6 +6,8 @@ require_once 'config/envloader.php';
 require_once 'config/whatsapp.php';
 
 use Telegram\Bot\Api;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 // Set page variables for header template
 $pageTitle = 'Ajukan Permohonan - BantuDonor';
@@ -126,12 +128,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </html>
                 ";
                 
-                // Send email using PHP mail()
-                $headers = "MIME-Version: 1.0" . "\r\n";
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                $headers .= "From: BantuDonor <noreply@bantudonor.online>" . "\r\n";
+                // Send email using PHPMailer
+                $mail = new PHPMailer(true);
                 
-                mail($contactEmail, $emailSubject, $emailBody, $headers);
+                // Server settings
+                $mail->isSMTP();
+                $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $_ENV['MAIL_USERNAME'];
+                $mail->Password   = $_ENV['MAIL_PASSWORD'];
+                $mail->SMTPSecure = ($_ENV['MAIL_PORT'] ?? 587) == 465 ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = $_ENV['MAIL_PORT'] ?? 587;
+                
+                // Recipients
+                $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@bantudonor.online', $_ENV['MAIL_FROM_NAME'] ?? 'BantuDonor');
+                $mail->addAddress($contactEmail);
+                
+                // Content
+                $mail->isHTML(true);
+                $mail->CharSet = 'UTF-8';
+                $mail->Subject = $emailSubject;
+                $mail->Body    = $emailBody;
+                
+                $mail->send();
             } catch (Exception $e) {
                 // Log error but don't stop the process
                 error_log("Email sending error: " . $e->getMessage());
