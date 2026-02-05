@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Get address and administrative data
-        fetch(`handler/reverse_geocode.php?lat=${lat}&lon=${lon}`)
+        fetch(`/handler/reverse_geocode?lat=${lat}&lon=${lon}`)
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {

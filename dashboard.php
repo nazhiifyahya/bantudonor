@@ -27,10 +27,10 @@ include 'layout/header.php';
 
     <!-- Success/Error Messages -->
     <?php if (isset($_SESSION['success_message'])): ?>
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-auto max-w-6xl my-4" role="alert">
+    <div class="relative max-w-6xl px-4 py-3 mx-auto my-4 text-green-700 bg-green-100 border border-green-400 rounded" role="alert">
         <span class="block sm:inline"><?php echo htmlspecialchars($_SESSION['success_message']); ?></span>
         <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg class="fill-current h-6 w-6 text-green-500" role="button" onclick="this.parentElement.parentElement.style.display='none'">
+            <svg class="w-6 h-6 text-green-500 fill-current" role="button" onclick="this.parentElement.parentElement.style.display='none'">
                 <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
             </svg>
         </span>
@@ -38,7 +38,7 @@ include 'layout/header.php';
     <?php unset($_SESSION['success_message']); endif; ?>
 
     <?php if (isset($_SESSION['error_messages'])): ?>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-auto max-w-6xl my-4" role="alert">
+    <div class="relative max-w-6xl px-4 py-3 mx-auto my-4 text-red-700 bg-red-100 border border-red-400 rounded" role="alert">
         <strong class="font-bold">Terjadi kesalahan:</strong>
         <ul class="mt-2">
             <?php foreach ($_SESSION['error_messages'] as $error): ?>
@@ -46,7 +46,7 @@ include 'layout/header.php';
             <?php endforeach; ?>
         </ul>
         <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg class="fill-current h-6 w-6 text-red-500" role="button" onclick="this.parentElement.parentElement.style.display='none'">
+            <svg class="w-6 h-6 text-red-500 fill-current" role="button" onclick="this.parentElement.parentElement.style.display='none'">
                 <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
             </svg>
         </span>
@@ -56,55 +56,55 @@ include 'layout/header.php';
     <!-- Page Header -->
     <section class="bg-red-500">
         <div class="w-full px-20 py-16 flex flex-col justify-center items-center gap-10 max-w-[1280px] relative mx-auto">
-            <h1 class="text-slate-50 text-4xl font-bold">Dashboard</h1>
+            <h1 class="text-4xl font-bold text-slate-50">Dashboard</h1>
         </div>
     </section>
 
     <!-- Dashboard Content -->
     <section class="bg-slate-50">
         <div class="w-full px-20 py-16 max-w-[1280px] relative mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div class="grid grid-cols-1 gap-10 lg:grid-cols-3">
             
             <!-- User Profile Card -->
-            <div class="lg:col-span-1 p-6 bg-white rounded-lg shadow">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-gray-900 text-xl font-bold">Profil Saya</h2>
+            <div class="p-6 bg-white rounded-lg shadow lg:col-span-1">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Profil Saya</h2>
                     <button onclick="openEditProfileModal()" 
-                            class="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors">
+                            class="px-3 py-1 text-sm text-white transition-colors bg-red-500 rounded-lg hover:bg-red-600">
                         Edit Profil
                     </button>
                 </div>
                 <div class="space-y-3">
                     <div>
-                        <span class="text-slate-600 text-sm">Nama:</span>
-                        <p class="text-gray-900 font-semibold"><?php echo htmlspecialchars($user['full_name']); ?></p>
+                        <span class="text-sm text-slate-600">Nama:</span>
+                        <p class="font-semibold text-gray-900"><?php echo htmlspecialchars($user['full_name']); ?></p>
                     </div>
                     <div>
-                        <span class="text-slate-600 text-sm">Email:</span>
+                        <span class="text-sm text-slate-600">Email:</span>
                         <p class="text-gray-900"><?php echo htmlspecialchars($user['email']); ?></p>
                     </div>
                     <div>
-                        <span class="text-slate-600 text-sm">Golongan Darah:</span>
-                        <p class="text-red-500 font-bold text-lg"><?php echo htmlspecialchars($user['blood_type_abo'] . $user['blood_type_rhesus']); ?></p>
+                        <span class="text-sm text-slate-600">Golongan Darah:</span>
+                        <p class="text-lg font-bold text-red-500"><?php echo htmlspecialchars($user['blood_type_abo'] . $user['blood_type_rhesus']); ?></p>
                     </div>
                     <div>
-                        <span class="text-slate-600 text-sm">Phone:</span>
+                        <span class="text-sm text-slate-600">Phone:</span>
                         <p class="text-gray-900"><?php echo htmlspecialchars($user['phone']); ?></p>
                     </div>
                     <div>
-                        <span class="text-slate-600 text-sm">Lokasi:</span>
+                        <span class="text-sm text-slate-600">Lokasi:</span>
                         <p class="text-gray-900"><?php echo htmlspecialchars($user['city'] . ', ' . $user['province']); ?></p>
                     </div>
                     <?php if (!empty($user['address'])): ?>
                     <div>
-                        <span class="text-slate-600 text-sm">Alamat:</span>
-                        <p class="text-gray-900 text-sm"><?php echo htmlspecialchars($user['address']); ?></p>
+                        <span class="text-sm text-slate-600">Alamat:</span>
+                        <p class="text-sm text-gray-900"><?php echo htmlspecialchars($user['address']); ?></p>
                     </div>
                     <?php endif; ?>
                     <div>
-                        <span class="text-slate-600 text-sm">Telegram:</span>
+                        <span class="text-sm text-slate-600">Telegram:</span>
                         <?php if (!empty($user['telegram_chat_id'])): ?>
-                            <p class="text-gray-900 text-sm">Terhubung</p>
+                            <p class="text-sm text-gray-900">Terhubung</p>
                         <?php else: ?>
                             <a href="https://t.me/<?= $_ENV['TELEGRAM_BOT_USERNAME'] ?>?start=<?= urlencode($user['unique_token']) ?>" 
                             target="_blank" 
@@ -116,10 +116,10 @@ include 'layout/header.php';
                         <?php endif; ?>
                     </div>
                     <div>
-                        <span class="text-slate-600 text-sm">WhatsApp:</span>
+                        <span class="text-sm text-slate-600">WhatsApp:</span>
                         <?php if ($user['whatsapp_notification'] === 'ya'): ?>
                             <button onclick="disconnectWhatsApp()" 
-                            class="inline-flex items-center bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition-colors duration-300"
+                            class="inline-flex items-center px-5 py-3 font-semibold text-white transition-colors duration-300 bg-red-500 rounded-lg shadow-md hover:bg-red-600"
                             >
                                 Batal Hubungkan
                             </button>
@@ -135,14 +135,14 @@ include 'layout/header.php';
             </div>
 
             <!-- Statistics Cards -->
-            <div class="lg:col-span-2 space-y-6">
+            <div class="space-y-6 lg:col-span-2">
                 <!-- Stats Row -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="p-6 bg-white rounded-lg shadow text-center">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div class="p-6 text-center bg-white rounded-lg shadow">
                         <h3 class="text-2xl font-bold text-red-500"><?php echo $donationStats['total_donations']; ?></h3>
                         <p class="text-slate-600">Total Donasi</p>
                     </div>
-                    <div class="p-6 bg-white rounded-lg shadow text-center">
+                    <div class="p-6 text-center bg-white rounded-lg shadow">
                         <h3 class="text-2xl font-bold text-red-500">
                             <?php 
                             if ($donationStats['last_donation_date']) {
@@ -158,10 +158,10 @@ include 'layout/header.php';
 
                 <!-- Recent Donations -->
                 <div class="p-6 bg-white rounded-lg shadow">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-gray-900 text-xl font-bold">Riwayat Donasi</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-900">Riwayat Donasi</h2>
                         <button onclick="openAddDonationModal()" 
-                                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2">
+                                class="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-red-500 rounded-lg hover:bg-red-600">
                             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                             </svg>
@@ -171,10 +171,10 @@ include 'layout/header.php';
                     <?php if (!empty($userDonations)): ?>
                         <div class="space-y-4">
                             <?php foreach (array_slice($userDonations, 0, 5) as $donation): ?>
-                            <div class="border-l-4 border-red-500 pl-4">
-                                <div class="flex justify-between items-start">
+                            <div class="pl-4 border-l-4 border-red-500">
+                                <div class="flex items-start justify-between">
                                     <div class="flex-1">
-                                        <p class="text-gray-900 font-semibold"><?php echo htmlspecialchars($donation['donation_type']); ?></p>
+                                        <p class="font-semibold text-gray-900"><?php echo htmlspecialchars($donation['donation_type']); ?></p>
                                         <p class="text-slate-600"><?php echo htmlspecialchars($donation['location']); ?></p>
                                         <p class="text-sm text-slate-500">
                                             <?php echo date('d M Y', strtotime($donation['donation_date'])); ?>
@@ -183,14 +183,14 @@ include 'layout/header.php';
                                     <div class="flex items-center gap-2">
                                         <div class="flex gap-1">
                                             <button onclick="editDonation(<?php echo $donation['id']; ?>)" 
-                                                    class="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                                                    class="p-1 text-blue-600 transition-colors hover:text-blue-800"
                                                     title="Edit">
                                                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                                     <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708L7.707 12l-4 1 1-4L12.146.146zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
                                                 </svg>
                                             </button>
                                             <button onclick="deleteDonation(<?php echo $donation['id']; ?>)" 
-                                                    class="p-1 text-red-600 hover:text-red-800 transition-colors"
+                                                    class="p-1 text-red-600 transition-colors hover:text-red-800"
                                                     title="Hapus">
                                                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
@@ -218,48 +218,48 @@ include 'layout/header.php';
     </section>
 
     <!-- Edit Profile Modal -->
-    <div id="editProfileModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div id="editProfileModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center justify-between mb-6">
                         <h2 class="text-2xl font-bold text-gray-900">Edit Profil</h2>
                         <button onclick="closeEditProfileModal()" 
-                                class="text-gray-400 hover:text-gray-600 text-2xl">
+                                class="text-2xl text-gray-400 hover:text-gray-600">
                             &times;
                         </button>
                     </div>
                     
-                    <form id="editProfileForm" method="POST" action="handler/update_profile.php">
+                    <form id="editProfileForm" method="POST" action="/handler/update_profile">
                         <!-- Full Name -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Nama Lengkap</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Nama Lengkap</label>
                             <input type="text" 
                                    name="full_name" 
                                    id="edit_full_name"
                                    required
                                    value="<?php echo isset($_SESSION['form_data']['full_name']) ? htmlspecialchars($_SESSION['form_data']['full_name']) : htmlspecialchars($user['full_name']); ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                   class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                         </div>
                         
                         <!-- Email -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Email</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Email</label>
                             <input type="email" 
                                    name="email" 
                                    id="edit_email"
                                    required
                                    value="<?php echo isset($_SESSION['form_data']['email']) ? htmlspecialchars($_SESSION['form_data']['email']) : htmlspecialchars($user['email']); ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                   class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                         </div>
                         
                         <!-- Blood Type -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Golongan Darah</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Golongan Darah</label>
                             <div class="flex gap-2">
                                 <select name="blood_type_abo" 
                                         required
-                                        class="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                        class="flex-1 px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                                     <option value="">Pilih ABO</option>
                                     <option value="A" <?php echo (isset($_SESSION['form_data']['blood_type_abo']) ? ($_SESSION['form_data']['blood_type_abo'] === 'A') : ($user['blood_type_abo'] === 'A')) ? 'selected' : ''; ?>>A</option>
                                     <option value="B" <?php echo (isset($_SESSION['form_data']['blood_type_abo']) ? ($_SESSION['form_data']['blood_type_abo'] === 'B') : ($user['blood_type_abo'] === 'B')) ? 'selected' : ''; ?>>B</option>
@@ -269,7 +269,7 @@ include 'layout/header.php';
                                 
                                 <select name="blood_type_rhesus" 
                                         required
-                                        class="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                        class="flex-1 px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                                     <option value="">Pilih Rhesus</option>
                                     <option value="+" <?php echo (isset($_SESSION['form_data']['blood_type_rhesus']) ? ($_SESSION['form_data']['blood_type_rhesus'] === '+') : ($user['blood_type_rhesus'] === '+')) ? 'selected' : ''; ?>>Positif (+)</option>
                                     <option value="-" <?php echo (isset($_SESSION['form_data']['blood_type_rhesus']) ? ($_SESSION['form_data']['blood_type_rhesus'] === '-') : ($user['blood_type_rhesus'] === '-')) ? 'selected' : ''; ?>>Negatif (-)</option>
@@ -279,43 +279,43 @@ include 'layout/header.php';
                         
                         <!-- Phone -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Nomor WhatsApp</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Nomor WhatsApp</label>
                             <input type="tel" 
                                    name="phone" 
                                    id="edit_phone"
                                    required
                                    value="<?php echo isset($_SESSION['form_data']['phone']) ? htmlspecialchars($_SESSION['form_data']['phone']) : htmlspecialchars($user['phone']); ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                   class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                         </div>
                         
                         <!-- Location Section -->
                         <div class="mb-6">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Domisili</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Domisili</label>
                             
                             <!-- Map Controls -->
                             <div class="flex gap-2 mb-3">
                                 <button type="button" id="edit-use-current-location" 
-                                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2">
+                                        class="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600">
                                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                                     </svg>
                                     Gunakan Lokasi Saya
                                 </button>
                                 <button type="button" id="edit-toggle-map" 
-                                        class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                                        class="px-4 py-2 text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600">
                                     Pilih di Peta
                                 </button>
                             </div>
                             
                             <!-- Map Container -->
                             <div id="edit-map-container" class="hidden mb-3">
-                                <div id="edit-map" class="w-full h-60 rounded-lg border border-slate-300"></div>
-                                <p class="text-sm text-slate-600 mt-2">Klik pada peta untuk memilih lokasi Anda</p>
+                                <div id="edit-map" class="w-full border rounded-lg h-60 border-slate-300"></div>
+                                <p class="mt-2 text-sm text-slate-600">Klik pada peta untuk memilih lokasi Anda</p>
                             </div>
                             
                             <!-- Coordinate Display -->
                             <div id="edit-location-info" class="mb-3 <?php echo (empty($user['latitude']) && !isset($_SESSION['form_data']['latitude'])) ? 'hidden' : ''; ?>">
-                                <div class="p-3 bg-blue-50 rounded-lg">
+                                <div class="p-3 rounded-lg bg-blue-50">
                                     <p class="text-sm text-slate-700">
                                         <strong>Koordinat:</strong> <span id="edit-coordinates">
                                             <?php 
@@ -339,20 +339,20 @@ include 'layout/header.php';
                             
                             <!-- Address Field (Read-only) -->
                             <div class="mb-3">
-                                <label class="block text-slate-600 text-sm font-medium mb-2">Alamat</label>
+                                <label class="block mb-2 text-sm font-medium text-slate-600">Alamat</label>
                                 <input type="text" 
                                        id="edit-address-input"
                                        name="address" 
                                        readonly
                                        placeholder="Alamat akan terisi otomatis setelah memilih lokasi"
                                        value="<?php echo isset($_SESSION['form_data']['address']) ? htmlspecialchars($_SESSION['form_data']['address']) : htmlspecialchars($user['address'] ?? ''); ?>"
-                                       class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-gray-50 text-gray-700 cursor-not-allowed">
+                                       class="w-full px-4 py-3 text-gray-700 border rounded-lg cursor-not-allowed border-slate-300 bg-gray-50">
                             </div>
                             
                             <!-- Province and City Fields (Read-only) -->
                             <div class="flex gap-2">
                                 <div class="flex-1">
-                                    <label class="block text-slate-600 text-sm font-medium mb-2">Provinsi</label>
+                                    <label class="block mb-2 text-sm font-medium text-slate-600">Provinsi</label>
                                     <input type="text" 
                                            id="edit-province-input"
                                            name="province" 
@@ -360,11 +360,11 @@ include 'layout/header.php';
                                            required
                                            placeholder="Akan terisi otomatis"
                                            value="<?php echo isset($_SESSION['form_data']['province']) ? htmlspecialchars($_SESSION['form_data']['province']) : htmlspecialchars($user['province']); ?>"
-                                           class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-gray-50 text-gray-700 cursor-not-allowed">
+                                           class="w-full px-4 py-3 text-gray-700 border rounded-lg cursor-not-allowed border-slate-300 bg-gray-50">
                                 </div>
                                 
                                 <div class="flex-1">
-                                    <label class="block text-slate-600 text-sm font-medium mb-2">Kota/Kabupaten</label>
+                                    <label class="block mb-2 text-sm font-medium text-slate-600">Kota/Kabupaten</label>
                                     <input type="text" 
                                            id="edit-city-input"
                                            name="city" 
@@ -372,7 +372,7 @@ include 'layout/header.php';
                                            required
                                            placeholder="Akan terisi otomatis"
                                            value="<?php echo isset($_SESSION['form_data']['city']) ? htmlspecialchars($_SESSION['form_data']['city']) : htmlspecialchars($user['city']); ?>"
-                                           class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-gray-50 text-gray-700 cursor-not-allowed">
+                                           class="w-full px-4 py-3 text-gray-700 border rounded-lg cursor-not-allowed border-slate-300 bg-gray-50">
                                 </div>
                             </div>
                         </div>
@@ -381,11 +381,11 @@ include 'layout/header.php';
                         <div class="flex gap-3 pt-4 border-t">
                             <button type="button" 
                                     onclick="closeEditProfileModal()"
-                                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                    class="flex-1 px-4 py-3 text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Batal
                             </button>
                             <button type="submit" 
-                                    class="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                    class="flex-1 px-4 py-3 text-white transition-colors bg-red-500 rounded-lg hover:bg-red-600">
                                 Simpan Perubahan
                             </button>
                         </div>
@@ -396,14 +396,14 @@ include 'layout/header.php';
     </div>
 
     <!-- Add/Edit Donation Modal -->
-    <div id="donationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div id="donationModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-lg max-w-md w-full">
+            <div class="w-full max-w-md bg-white rounded-lg shadow-lg">
                 <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center justify-between mb-6">
                         <h2 id="donationModalTitle" class="text-2xl font-bold text-gray-900">Tambah Riwayat Donasi</h2>
                         <button onclick="closeDonationModal()" 
-                                class="text-gray-400 hover:text-gray-600 text-2xl">
+                                class="text-2xl text-gray-400 hover:text-gray-600">
                             &times;
                         </button>
                     </div>
@@ -414,22 +414,22 @@ include 'layout/header.php';
                         
                         <!-- Tanggal Donasi -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Tanggal Donasi *</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Tanggal Donasi *</label>
                             <input type="date" 
                                    id="donationDate"
                                    name="donation_date" 
                                    required
                                    max="<?php echo date('Y-m-d'); ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                   class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                         </div>
                         
                         <!-- Jenis Donor -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Jenis Donor *</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Jenis Donor *</label>
                             <select id="donationType" 
                                     name="donation_type" 
                                     required
-                                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                    class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                                 <option value="">Pilih Jenis Donor</option>
                                 <option value="Whole Blood">Whole Blood (Darah Lengkap)</option>
                                 <option value="Red Blood Cells">Red Blood Cells (Sel Darah Merah)</option>
@@ -440,25 +440,25 @@ include 'layout/header.php';
                         
                         <!-- Lokasi -->
                         <div class="mb-4">
-                            <label class="block text-slate-600 text-sm font-medium mb-2">Lokasi Donasi *</label>
+                            <label class="block mb-2 text-sm font-medium text-slate-600">Lokasi Donasi *</label>
                             <input type="text" 
                                    id="donationLocation"
                                    name="location" 
                                    required
                                    placeholder="Contoh: PMI Jakarta Pusat, RS Cipto Mangunkusumo"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                   class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                         </div>
                         
                         <!-- Form Actions -->
                         <div class="flex gap-3">
                             <button type="button" 
                                     onclick="closeDonationModal()"
-                                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                                    class="flex-1 px-4 py-3 text-gray-700 transition-colors border border-gray-300 rounded-lg hover:bg-gray-50">
                                 Batal
                             </button>
                             <button type="submit" 
                                     id="donationSubmitBtn"
-                                    class="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                                    class="flex-1 px-4 py-3 text-white transition-colors bg-red-500 rounded-lg hover:bg-red-600">
                                 Simpan
                             </button>
                         </div>
@@ -642,7 +642,7 @@ include 'layout/header.php';
                 }
                 
                 // Get address and administrative data
-                fetch(`handler/reverse_geocode.php?lat=${lat}&lon=${lon}`)
+                fetch(`/handler/reverse_geocode?lat=${lat}&lon=${lon}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'success') {
@@ -696,7 +696,7 @@ include 'layout/header.php';
             formData.append('action', 'get');
             formData.append('id', id);
             
-            fetch('handler/manage_donations.php', {
+            fetch('/handler/manage_donations', {
                 method: 'POST',
                 body: formData
             })
@@ -733,7 +733,7 @@ include 'layout/header.php';
             formData.append('action', 'delete');
             formData.append('id', id);
             
-            fetch('handler/manage_donations.php', {
+            fetch('/handler/manage_donations', {
                 method: 'POST',
                 body: formData
             })
@@ -770,7 +770,7 @@ include 'layout/header.php';
             
             const formData = new FormData(this);
             
-            fetch('handler/manage_donations.php', {
+            fetch('/handler/manage_donations', {
                 method: 'POST',
                 body: formData
             })
@@ -798,14 +798,14 @@ include 'layout/header.php';
         function connectWhatsApp() {
             
             setTimeout(function() {
-                window.location.href = 'handler/activate_whatsapp.php';
+                window.location.href = '/handler/activate_whatsapp';
             }, 1000);
         }
         
         // WhatsApp disconnection function
         function disconnectWhatsApp() {
             if (confirm('Apakah Anda yakin ingin membatalkan notifikasi WhatsApp?')) {
-                window.location.href = 'handler/deactivate_whatsapp.php';
+                window.location.href = '/handler/deactivate_whatsapp';
             }
         }
     </script>

@@ -224,45 +224,45 @@ include 'layout/header.php';
     <!-- Page Header -->
     <section class="bg-red-500">
         <div class="w-full px-4 sm:px-6 lg:px-20 py-16 flex flex-col justify-center items-center gap-10 max-w-[1280px] mx-auto">
-            <h1 class="text-slate-50 text-4xl font-bold text-center">Ajukan Permohonan</h1>
+            <h1 class="text-4xl font-bold text-center text-slate-50">Ajukan Permohonan</h1>
         </div>
     </section>
 
     <!-- Request Form -->
     <section class="bg-slate-50">
-        <div class="w-full px-4 sm:px-6 lg:px-20 py-16 flex justify-center relative mx-auto">
+        <div class="relative flex justify-center w-full px-4 py-16 mx-auto sm:px-6 lg:px-20">
             
             <?php if ($error): ?>
-                <div class="w-full p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <div class="w-full p-4 text-red-700 bg-red-100 border border-red-400 rounded">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
             
             <?php if ($message): ?>
-                <div class="w-full p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                <div class="w-full p-4 text-green-700 bg-green-100 border border-green-400 rounded">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
             <?php endif; ?>
 
-            <form method="POST" class="w-full max-w-4xl bg-white rounded-lg px-6 py-8 space-y-6 shadow-md">
+            <form method="POST" class="w-full max-w-4xl px-6 py-8 space-y-6 bg-white rounded-lg shadow-md">
                 <!-- Patient Information Section -->
-                <h2 class="w-full text-gray-900 text-2xl font-bold mb-4">Informasi Pasien</h2>
-                <div class="w-full h-0 border-t border-slate-200 mb-6"></div>
+                <h2 class="w-full mb-4 text-2xl font-bold text-gray-900">Informasi Pasien</h2>
+                <div class="w-full h-0 mb-6 border-t border-slate-200"></div>
                 
-                <div class="w-full flex flex-col gap-4 mb-8">
+                <div class="flex flex-col w-full gap-4 mb-8">
                     <!-- Patient Name -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Nama Pasien</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Nama Pasien</label>
                         <input type="text" 
                                name="patient_name" 
                                required
                                value="<?php echo isset($_POST['patient_name']) ? htmlspecialchars($_POST['patient_name']) : ''; ?>"
-                               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                               class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                     
                     <!-- Hospital Search -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Rumah Sakit</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Rumah Sakit</label>
                         <div class="relative">
                             <input type="text" 
                                    id="hospital-search"
@@ -270,33 +270,33 @@ include 'layout/header.php';
                                    required
                                    placeholder="Ketik nama rumah sakit untuk mencari..."
                                    value="<?php echo isset($_POST['hospital_name']) ? htmlspecialchars($_POST['hospital_name']) : ''; ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none"
+                                   class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none"
                                    autocomplete="off">
-                            <div id="hospital-search-results" class="absolute top-full left-0 right-0 bg-white border border-slate-300 rounded-lg mt-1 max-h-60 overflow-y-auto hidden z-10 shadow-lg">
+                            <div id="hospital-search-results" class="absolute left-0 right-0 z-10 hidden mt-1 overflow-y-auto bg-white border rounded-lg shadow-lg top-full border-slate-300 max-h-60">
                             </div>
-                            <div id="search-loading" class="absolute right-3 top-3 hidden">
-                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-500"></div>
+                            <div id="search-loading" class="absolute hidden right-3 top-3">
+                                <div class="w-6 h-6 border-b-2 border-red-500 rounded-full animate-spin"></div>
                             </div>
                         </div>
                         <p class="text-sm text-slate-500">Mulai ketik nama rumah sakit untuk melihat hasil pencarian</p>
                     </div>
                     
                     <!-- Hospital Address (Read-only) -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Alamat Rumah Sakit</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Alamat Rumah Sakit</label>
                         <textarea name="hospital_address" 
                                   id="hospital-address"
                                   required
                                   readonly
                                   rows="3"
                                   placeholder="Alamat akan terisi otomatis setelah memilih rumah sakit"
-                                  class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-gray-50 text-gray-700 cursor-not-allowed focus:outline-none"><?php echo isset($_POST['hospital_address']) ? htmlspecialchars($_POST['hospital_address']) : ''; ?></textarea>
+                                  class="w-full px-4 py-3 text-gray-700 border rounded-lg cursor-not-allowed border-slate-300 bg-gray-50 focus:outline-none"><?php echo isset($_POST['hospital_address']) ? htmlspecialchars($_POST['hospital_address']) : ''; ?></textarea>
                     </div>
                     
                     <!-- Location (Read-only) -->
-                    <div class="w-full flex gap-2">
-                        <div class="flex-1 flex flex-col gap-2">
-                            <label class="text-slate-600 text-base font-normal">Kota/Kabupaten</label>
+                    <div class="flex w-full gap-2">
+                        <div class="flex flex-col flex-1 gap-2">
+                            <label class="text-base font-normal text-slate-600">Kota/Kabupaten</label>
                             <input type="text" 
                                    name="city" 
                                    id="hospital-city"
@@ -304,10 +304,10 @@ include 'layout/header.php';
                                    readonly
                                    placeholder="Akan terisi otomatis"
                                    value="<?php echo isset($_POST['city']) ? htmlspecialchars($_POST['city']) : ''; ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-gray-50 text-gray-700 cursor-not-allowed focus:outline-none">
+                                   class="w-full px-4 py-3 text-gray-700 border rounded-lg cursor-not-allowed border-slate-300 bg-gray-50 focus:outline-none">
                         </div>
-                        <div class="flex-1 flex flex-col gap-2">
-                            <label class="text-slate-600 text-base font-normal">Provinsi</label>
+                        <div class="flex flex-col flex-1 gap-2">
+                            <label class="text-base font-normal text-slate-600">Provinsi</label>
                             <input type="text" 
                                    name="province"
                                    id="hospital-province"
@@ -315,7 +315,7 @@ include 'layout/header.php';
                                    readonly
                                    placeholder="Akan terisi otomatis"
                                    value="<?php echo isset($_POST['province']) ? htmlspecialchars($_POST['province']) : ''; ?>"
-                                   class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-gray-50 text-gray-700 cursor-not-allowed focus:outline-none">
+                                   class="w-full px-4 py-3 text-gray-700 border rounded-lg cursor-not-allowed border-slate-300 bg-gray-50 focus:outline-none">
                         </div>
                     </div>
                     
@@ -324,7 +324,7 @@ include 'layout/header.php';
                     <input type="hidden" name="longitude" id="hospital-longitude" value="<?php echo isset($_POST['longitude']) ? htmlspecialchars($_POST['longitude']) : ''; ?>">
                     
                     <!-- Location Info Display -->
-                    <div id="location-info" class="w-full p-3 bg-green-50 border border-green-200 rounded-lg hidden">
+                    <div id="location-info" class="hidden w-full p-3 border border-green-200 rounded-lg bg-green-50">
                         <div class="flex items-center gap-2">
                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -337,12 +337,12 @@ include 'layout/header.php';
                     </div>
                     
                     <!-- Blood Type -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Golongan Darah</label>
-                        <div class="w-full flex gap-2">
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Golongan Darah</label>
+                        <div class="flex w-full gap-2">
                             <select name="blood_type_abo" 
                                     required
-                                    class="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                    class="flex-1 px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                                 <option value="">Pilih ABO</option>
                                 <option value="A" <?php echo (isset($_POST['blood_type_abo']) && $_POST['blood_type_abo'] === 'A') ? 'selected' : ''; ?>>A</option>
                                 <option value="B" <?php echo (isset($_POST['blood_type_abo']) && $_POST['blood_type_abo'] === 'B') ? 'selected' : ''; ?>>B</option>
@@ -352,7 +352,7 @@ include 'layout/header.php';
                             
                             <select name="blood_type_rhesus" 
                                     required
-                                    class="flex-1 px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                    class="flex-1 px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                                 <option value="">Pilih Rhesus</option>
                                 <option value="+" <?php echo (isset($_POST['blood_type_rhesus']) && $_POST['blood_type_rhesus'] === '+') ? 'selected' : ''; ?>>Positif (+)</option>
                                 <option value="-" <?php echo (isset($_POST['blood_type_rhesus']) && $_POST['blood_type_rhesus'] === '-') ? 'selected' : ''; ?>>Negatif (-)</option>
@@ -361,23 +361,23 @@ include 'layout/header.php';
                     </div>
                     
                     <!-- Blood Bags -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Jumlah Kantong</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Jumlah Kantong</label>
                         <input type="number" 
                                name="blood_bags_needed" 
                                required
                                min="1"
                                max="10"
                                value="<?php echo isset($_POST['blood_bags_needed']) ? htmlspecialchars($_POST['blood_bags_needed']) : '1'; ?>"
-                               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                               class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                     
                     <!-- Donation Type -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Jenis Donor</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Jenis Donor</label>
                         <select name="donation_type" 
                                 required
-                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                                class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                             <option value="">Pilih Jenis Donor</option>
                             <option value="Whole Blood" <?php echo (isset($_POST['donation_type']) && $_POST['donation_type'] === 'Whole Blood') ? 'selected' : ''; ?>>Whole Blood</option>
                             <option value="Red Blood Cells" <?php echo (isset($_POST['donation_type']) && $_POST['donation_type'] === 'Red Blood Cells') ? 'selected' : ''; ?>>Red Blood Cells</option>
@@ -389,45 +389,45 @@ include 'layout/header.php';
                 </div>
 
                 <!-- Contact Information Section -->
-                <h2 class="w-full text-gray-900 text-2xl font-bold mb-4">Informasi Narahubung/Contact Person</h2>
-                <div class="w-full h-0 border-t border-slate-200 mb-6"></div>
+                <h2 class="w-full mb-4 text-2xl font-bold text-gray-900">Informasi Narahubung/Contact Person</h2>
+                <div class="w-full h-0 mb-6 border-t border-slate-200"></div>
                 
-                <div class="w-full flex flex-col gap-4 mb-8">
+                <div class="flex flex-col w-full gap-4 mb-8">
                     <!-- Contact Person -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Nama Narahubung</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Nama Narahubung</label>
                         <input type="text" 
                                name="contact_person" 
                                required
                                value="<?php echo isset($_POST['contact_person']) ? htmlspecialchars($_POST['contact_person']) : ''; ?>"
-                               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                               class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                     
                     <!-- Contact Phone -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Nomor WhatsApp</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Nomor WhatsApp</label>
                         <input type="tel" 
                                name="contact_phone" 
                                required
                                placeholder="Contoh: 6285xxxxxxxx"
                                value="<?php echo isset($_POST['contact_phone']) ? htmlspecialchars($_POST['contact_phone']) : ''; ?>"
-                               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                               class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                     
                     <!-- Contact Email -->
-                    <div class="w-full flex flex-col gap-2">
-                        <label class="text-slate-600 text-base font-normal">Email (Untuk mendapatkan update)</label>
+                    <div class="flex flex-col w-full gap-2">
+                        <label class="text-base font-normal text-slate-600">Email (Untuk mendapatkan update)</label>
                         <input type="email" 
                                name="contact_email" 
                                required
                                value="<?php echo isset($_POST['contact_email']) ? htmlspecialchars($_POST['contact_email']) : ''; ?>"
-                               class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:border-red-500 focus:outline-none">
+                               class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                 </div>
                 
                 <!-- Submit Button -->
                 <button type="submit" 
-                        class="w-full px-8 py-3 bg-red-500 rounded-full text-slate-50 text-base font-semibold hover:bg-red-600 transition-colors">
+                        class="w-full px-8 py-3 text-base font-semibold transition-colors bg-red-500 rounded-full text-slate-50 hover:bg-red-600">
                     Kirim Permohonan
                 </button>
             </form>
@@ -492,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function searchHospitals(query) {
         searchLoading.classList.remove('hidden');
-        fetch(`handler/search_hospitals.php?q=${encodeURIComponent(query)}`)
+        fetch(`/handler/search_hospitals?q=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
                 searchLoading.classList.add('hidden');
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
             resultItem.innerHTML = `
                 <div class="font-medium text-gray-900">${escapeHtml(hospital.name.split(',')[0])}</div>
                 <div class="text-sm text-gray-600">${escapeHtml(hospital.address)}</div>
-                <div class="text-xs text-gray-500 mt-1">
+                <div class="mt-1 text-xs text-gray-500">
                     ${escapeHtml(hospital.city)} • ${escapeHtml(hospital.province)}
                 </div>
             `;
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResults.innerHTML = `
             <div class="px-4 py-3 text-center text-gray-500">
                 <div class="text-sm">Tidak ada rumah sakit ditemukan</div>
-                <div class="text-xs mt-1">Coba gunakan kata kunci yang berbeda</div>
+                <div class="mt-1 text-xs">Coba gunakan kata kunci yang berbeda</div>
             </div>
         `;
         searchResults.classList.remove('hidden');
@@ -549,7 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResults.innerHTML = `
             <div class="px-4 py-3 text-center text-red-500">
                 <div class="text-sm">Terjadi kesalahan saat pencarian</div>
-                <div class="text-xs mt-1">Silakan coba lagi</div>
+                <div class="mt-1 text-xs">Silakan coba lagi</div>
             </div>
         `;
         searchResults.classList.remove('hidden');
