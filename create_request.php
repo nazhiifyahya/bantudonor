@@ -18,6 +18,13 @@ use PHPMailer\PHPMailer\Exception;
 $pageTitle = 'Ajukan Permohonan - BantuDonor';
 $currentPage = 'create_request';
 
+// Check if user is logged in and get their data for auto-fill
+$loggedInUser = null;
+if (isset($_SESSION['user_id'])) {
+    $userModel = new User();
+    $loggedInUser = $userModel->getUserById($_SESSION['user_id']);
+}
+
 $message = '';
 $error = '';
 
@@ -414,7 +421,7 @@ include 'layout/header.php';
                         <input type="text" 
                                name="contact_person" 
                                required
-                               value="<?php echo isset($_POST['contact_person']) ? htmlspecialchars($_POST['contact_person']) : ''; ?>"
+                               value="<?php echo isset($_POST['contact_person']) ? htmlspecialchars($_POST['contact_person']) : ($loggedInUser ? htmlspecialchars($loggedInUser['full_name']) : ''); ?>"
                                class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                     
@@ -425,7 +432,7 @@ include 'layout/header.php';
                                name="contact_phone" 
                                required
                                placeholder="Contoh: 6285xxxxxxxx"
-                               value="<?php echo isset($_POST['contact_phone']) ? htmlspecialchars($_POST['contact_phone']) : ''; ?>"
+                               value="<?php echo isset($_POST['contact_phone']) ? htmlspecialchars($_POST['contact_phone']) : ($loggedInUser ? htmlspecialchars($loggedInUser['phone']) : ''); ?>"
                                class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                     
@@ -435,7 +442,7 @@ include 'layout/header.php';
                         <input type="email" 
                                name="contact_email" 
                                required
-                               value="<?php echo isset($_POST['contact_email']) ? htmlspecialchars($_POST['contact_email']) : ''; ?>"
+                               value="<?php echo isset($_POST['contact_email']) ? htmlspecialchars($_POST['contact_email']) : ($loggedInUser ? htmlspecialchars($loggedInUser['email']) : ''); ?>"
                                class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
                 </div>
