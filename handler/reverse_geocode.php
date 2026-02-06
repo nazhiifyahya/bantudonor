@@ -4,6 +4,33 @@ header('Access-Control-Allow-Origin: *');
 
 require_once '../config/envloader.php';
 
+/**
+ * Clean city/regency name by removing administrative prefixes and suffixes
+ */
+function cleanCityName($name) {
+    if (empty($name)) {
+        return $name;
+    }
+    
+    // Remove common prefixes (case-insensitive)
+    $prefixes = ['Kabupaten ', 'Kota ', 'Kab. ', 'Kab ', 'Kotamadya '];
+    foreach ($prefixes as $prefix) {
+        if (stripos($name, $prefix) === 0) {
+            $name = substr($name, strlen($prefix));
+        }
+    }
+    
+    // Remove common suffixes (case-insensitive)
+    $suffixes = [' Regency', ' City', ' Municipality'];
+    foreach ($suffixes as $suffix) {
+        if (stripos($name, $suffix) === strlen($name) - strlen($suffix)) {
+            $name = substr($name, 0, -strlen($suffix));
+        }
+    }
+    
+    return trim($name);
+}
+
 try {
     $lat = $_GET['lat'] ?? '';
     $lon = $_GET['lon'] ?? '';
@@ -64,6 +91,8 @@ try {
     $province = $geoapifyData['results'][0]['state'];
     $regency = $geoapifyData['results'][0]['county'] ?? '';
 
+    // Clean up regency name by removing administrative prefixes/suffixes
+    $regency = cleanCityName($regency);
     
     echo json_encode([
         'status' => 'success',
