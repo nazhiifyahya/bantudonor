@@ -245,16 +245,16 @@ include 'layout/header.php';
 
     <!-- Request Form -->
     <section class="bg-slate-50">
-        <div class="relative flex justify-center w-full px-4 py-16 mx-auto sm:px-6 lg:px-20">
+        <div class="w-full px-4 py-16 flex flex-col justify-center items-center gap-10 max-w-[1280px] relative mx-auto sm:px-6 lg:px-20">
             
             <?php if ($error): ?>
-                <div class="w-full p-4 text-red-700 bg-red-100 border border-red-400 rounded">
+                <div class="w-full max-w-4xl p-4 text-red-700 bg-red-100 border border-red-400 rounded">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
             
             <?php if ($message): ?>
-                <div class="w-full p-4 text-green-700 bg-green-100 border border-green-400 rounded">
+                <div class="w-full max-w-4xl p-4 text-green-700 bg-green-100 border border-green-400 rounded">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
             <?php endif; ?>

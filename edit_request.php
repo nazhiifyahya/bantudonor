@@ -79,16 +79,16 @@ include 'layout/header.php';
 
     <!-- Edit Form -->
     <section class="bg-slate-50">
-        <div class="w-full px-4 sm:px-6 lg:px-20 py-16 flex justify-center relative mx-auto">
+        <div class="w-full px-4 sm:px-6 lg:px-20 py-16 flex flex-col justify-center items-center gap-10 max-w-[1280px] relative mx-auto">
             
             <?php if ($error): ?>
-                <div class="w-full max-w-4xl p-4 bg-red-100 border border-red-400 text-red-700 rounded mb-6">
+                <div class="w-full max-w-4xl p-4 bg-red-100 border border-red-400 text-red-700 rounded">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
             
             <?php if ($message): ?>
-                <div class="w-full max-w-4xl p-4 bg-green-100 border border-green-400 text-green-700 rounded mb-6">
+                <div class="w-full max-w-4xl p-4 bg-green-100 border border-green-400 text-green-700 rounded">
                     <?php echo htmlspecialchars($message); ?>
                 </div>
             <?php endif; ?>
