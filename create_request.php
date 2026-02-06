@@ -1,4 +1,9 @@
 <?php
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
 session_start();
 require_once 'models/BloodRequest.php';
 require_once 'models/User.php';
@@ -162,18 +167,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!empty($suitableUser)) {
                     $telegram = new Api($_ENV['TELEGRAM_BOT_TOKEN']);
                     foreach ($suitableUser as $user) {
-                        $telegram->sendMessage([
-                            'chat_id' => $user['telegram_chat_id'],
-                            'text' => "Permohonan baru telah diajukan:\n\n" .
-                                      "Nama Pasien: $patientName\n" .
-                                      "Rumah Sakit: $hospitalName\n" .
-                                      "Alamat: $hospitalAddress\n" .
-                                      "Golongan Darah: $bloodTypeAbo$bloodTypeRhesus\n" .
-                                      "Jumlah Kantong: $bloodBagsNeeded\n" .
-                                      "Jenis Donor: $donationType\n" .
-                                      "Narahubung: $contactPerson ($contactPhone, $contactEmail)\n\n" .
-                                      "Silakan cek aplikasi untuk detail lebih lanjut."
-                        ]);
+                        // Skip if chat_id is empty or null
+                        if (empty($user['telegram_chat_id'])) {
+                            continue;
+                        }
+                        
+                        try {
+                            $telegram->sendMessage([
+                                'chat_id' => $user['telegram_chat_id'],
+                                'text' => "Permohonan baru telah diajukan:\n\n" .
+                                          "Nama Pasien: $patientName\n" .
+                                          "Rumah Sakit: $hospitalName\n" .
+                                          "Alamat: $hospitalAddress\n" .
+                                          "Golongan Darah: $bloodTypeAbo$bloodTypeRhesus\n" .
+                                          "Jumlah Kantong: $bloodBagsNeeded\n" .
+                                          "Jenis Donor: $donationType\n" .
+                                          "Narahubung: $contactPerson ($contactPhone, $contactEmail)\n\n" .
+                                          "Silakan cek aplikasi untuk detail lebih lanjut."
+                            ]);
+                        } catch (Exception $telegramError) {
+                            // Log individual send error but continue with other users
+                            error_log("Telegram send error for user {$user['telegram_chat_id']}: " . $telegramError->getMessage());
+                        }
                     }
                 }
             } catch (Exception $e) {
