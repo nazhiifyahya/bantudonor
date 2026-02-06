@@ -30,9 +30,9 @@ include 'layout/header.php';
             <div class="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-4 mt-4">
                 <a href="create_request.php" class="px-8 py-3 bg-red-500 rounded-full text-slate-50 text-base font-semibold text-center w-full sm:w-auto">Ajukan Permohonan</a>
                 <?php if (!isset($_SESSION['user_id'])): ?>
-                    <a href="register.php" class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
+                    <a href="register.php" class="px-8 py-3 bg-red-500 rounded-full text-slate-50 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
                 <?php else: ?>
-                    <a href="blood_requests.php" class="px-8 py-3 rounded-full border border-gray-900 text-gray-900 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
+                    <a href="blood_requests.php" class="px-8 py-3 bg-red-500 rounded-full text-slate-50 text-base font-semibold text-center w-full sm:w-auto">Jadi Relawan</a>
                 <?php endif; ?>
             </div>
         </div>
