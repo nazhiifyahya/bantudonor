@@ -30,7 +30,8 @@ class BloodRequest extends BaseModel {
             // Extract number and increment
             $lastCode = $lastRequest['request_code'];
             $parts = explode('-', $lastCode);
-            $number = intval($parts[0] . substr($parts[0], 2)) + 1;
+            // Extract numeric part from "BD001" -> "001"
+            $number = intval(substr($parts[0], strlen($prefix))) + 1;
             $code = $prefix . sprintf('%03d', $number) . '-' . $date;
         } else {
             $code = $prefix . '001-' . $date;
