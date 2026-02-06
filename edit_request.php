@@ -70,9 +70,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $request) {
         
         $updated = $bloodRequestModel->update($request['id'], $updateData);
         if ($updated) {
-            $message = 'Permohonan berhasil diperbarui!';
             // Reload request data
             $request = $bloodRequestModel->getByToken($token);
+            
+            // Check if status is now inactive
+            if ($request['status'] !== 'Active') {
+                $message = 'Permohonan berhasil diperbarui! Status telah diubah menjadi ' . $request['status'] . '.';
+                $request = null; // Prevent form from displaying again
+            } else {
+                $message = 'Permohonan berhasil diperbarui!';
+                // Reload eligible volunteers since data might have changed
+                $userModel = new User();
+                $eligibleVolunteers = $userModel->getEligibleVolunteersWithPhone(
+                    $request['blood_type_abo'],
+                    $request['blood_type_rhesus'],
+                    $request['latitude'] ?? null,
+                    $request['longitude'] ?? null,
+                    20 // Maximum distance in kilometers
+                );
+            }
         } else {
             $error = 'Terjadi kesalahan saat memperbarui permohonan. Silakan coba lagi.';
         }
