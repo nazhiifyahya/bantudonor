@@ -110,6 +110,60 @@ class User extends BaseModel {
     }
 
     /**
+     * Get eligible volunteers willing to share phone number
+     */
+    public function getEligibleVolunteersWithPhone($bloodTypeAbo, $bloodTypeRhesus, $latitude = null, $longitude = null, $maxDistanceKm = 20) {
+        // Base query to get volunteers willing to share phone
+        $sql = "SELECT 
+                    full_name, 
+                    phone, 
+                    city, 
+                    province, 
+                    blood_type_abo, 
+                    blood_type_rhesus,
+                    ST_Y(location) AS latitude,
+                    ST_X(location) AS longitude";
+        
+        // Add distance calculation if coordinates are provided
+        if ($latitude !== null && $longitude !== null) {
+            $sql .= ",
+                    (ST_Distance_Sphere(
+                        POINT(:lon, :lat),
+                        location
+                    ) / 1000) AS distance";
+        }
+        
+        $sql .= " FROM {$this->table} 
+                WHERE blood_type_abo = :abo 
+                AND blood_type_rhesus = :rhesus 
+                AND share_phone = 'ya'
+                AND is_active = 1";
+        
+        // Add distance filter if coordinates are provided
+        if ($latitude !== null && $longitude !== null) {
+            $sql .= " HAVING distance <= :maxDistance
+                     ORDER BY distance ASC";
+        } else {
+            $sql .= " ORDER BY city ASC";
+        }
+        
+        $params = [
+            ':abo' => $bloodTypeAbo,
+            ':rhesus' => $bloodTypeRhesus
+        ];
+        
+        if ($latitude !== null && $longitude !== null) {
+            $params[':lat'] = $latitude;
+            $params[':lon'] = $longitude;
+            $params[':maxDistance'] = $maxDistanceKm;
+        }
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Update last donation date
      */
     public function updateLastDonationDate($userId, $date) {

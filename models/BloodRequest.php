@@ -181,7 +181,9 @@ class BloodRequest extends BaseModel {
      * Get blood request by unique token
      */
     public function getByToken($token) {
-        $sql = "SELECT * FROM {$this->table} WHERE unique_token = :token";
+        $sql = "SELECT *, ST_Y(location) AS latitude, ST_X(location) AS longitude 
+                FROM {$this->table} 
+                WHERE unique_token = :token";
         $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':token', $token);
         $stmt->execute();

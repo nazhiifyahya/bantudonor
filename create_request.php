@@ -119,16 +119,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             <p>Sistem kami akan mengirimkan notifikasi kepada para pendonor yang sesuai dengan kebutuhan Anda.</p>
                             
-                            <h3>Edit Permohonan</h3>
-                            <p>Jika Anda perlu mengubah data permohonan, silakan klik tombol di bawah ini:</p>
+                            <h3>Kelola Permohonan & Hubungi Relawan</h3>
+                            <p>Anda dapat mengubah detail permohonan dan melihat daftar relawan yang bersedia membagikan nomor kontak mereka. Klik tombol di bawah:</p>
                             
                             <center>
-                                <a href='$editLink' class='button'>Edit Permohonan</a>
+                                <a href='$editLink' class='button'>Kelola Permohonan</a>
                             </center>
                             
                             <p style='color: #6b7280; font-size: 14px; margin-top: 20px;'>
-                                <strong>Catatan:</strong> Link di atas hanya dapat digunakan selama permohonan masih aktif. 
-                                Simpan email ini untuk keperluan edit di kemudian hari.
+                                <strong>Catatan:</strong> Link di atas dapat digunakan untuk mengedit permohonan dan melihat relawan dalam radius 20 km yang bersedia dihubungi. 
+                                Simpan email ini untuk keperluan akses di kemudian hari.
                             </p>
                         </div>
                         <div class='footer'>

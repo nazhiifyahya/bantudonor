@@ -77,6 +77,7 @@
                 'blood_type_rhesus' => $_POST['blood_type_rhesus'],
                 'location' => $location,
                 'phone' => trim($_POST['phone']),
+                'share_phone' => isset($_POST['share_phone']) && $_POST['share_phone'] === 'ya' ? 'ya' : 'tidak',
                 'province' => trim($_POST['province']),
                 'city' => trim($_POST['city']),
                 'address' => trim($_POST['address'] ?? ''),

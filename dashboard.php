@@ -92,6 +92,26 @@ include 'layout/header.php';
                         <p class="text-gray-900"><?php echo htmlspecialchars($user['phone']); ?></p>
                     </div>
                     <div>
+                        <span class="text-sm text-slate-600">Bagikan Nomor:</span>
+                        <p class="text-gray-900">
+                            <?php if ($user['share_phone'] === 'ya'): ?>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Ya, bagikan dengan pemohon
+                                </span>
+                            <?php else: ?>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Tidak
+                                </span>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                    <div>
                         <span class="text-sm text-slate-600">Lokasi:</span>
                         <p class="text-gray-900"><?php echo htmlspecialchars($user['city'] . ', ' . $user['province']); ?></p>
                     </div>
@@ -286,6 +306,23 @@ include 'layout/header.php';
                                    required
                                    value="<?php echo isset($_SESSION['form_data']['phone']) ? htmlspecialchars($_SESSION['form_data']['phone']) : htmlspecialchars($user['phone']); ?>"
                                    class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
+                        </div>
+                        
+                        <!-- Share Phone -->
+                        <div class="mb-4">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" 
+                                       name="share_phone" 
+                                       value="ya"
+                                       <?php echo (isset($_SESSION['form_data']['share_phone']) ? ($_SESSION['form_data']['share_phone'] === 'ya') : ($user['share_phone'] === 'ya')) ? 'checked' : ''; ?>
+                                       class="w-4 h-4 text-red-500 border-gray-300 rounded focus:ring-red-500">
+                                <span class="ml-2 text-sm text-slate-600">
+                                    Bagikan nomor WhatsApp saya dengan pemohon donor darah
+                                </span>
+                            </label>
+                            <p class="mt-1 text-xs text-slate-500">
+                                Jika dicentang, nomor WhatsApp Anda akan ditampilkan kepada orang yang membutuhkan donor darah
+                            </p>
                         </div>
                         
                         <!-- Location Section -->
