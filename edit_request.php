@@ -26,6 +26,7 @@ if (empty($token)) {
         $error = 'Permohonan tidak ditemukan atau link sudah tidak valid.';
     } elseif ($request['status'] !== 'Active') {
         $error = 'Permohonan ini sudah tidak aktif dan tidak dapat diedit.';
+        $request = null; // Prevent form from displaying
     } else {
         // Get eligible volunteers willing to share their phone
         $userModel = new User();
