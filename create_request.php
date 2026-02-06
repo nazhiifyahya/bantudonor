@@ -431,7 +431,7 @@ include 'layout/header.php';
                         <input type="tel" 
                                name="contact_phone" 
                                required
-                               placeholder="Contoh: 6285xxxxxxxx"
+                               placeholder="Contoh: 085xxxxxxxx"
                                value="<?php echo isset($_POST['contact_phone']) ? htmlspecialchars($_POST['contact_phone']) : ($loggedInUser ? htmlspecialchars($loggedInUser['phone']) : ''); ?>"
                                class="w-full px-4 py-3 border rounded-lg border-slate-300 focus:border-red-500 focus:outline-none">
                     </div>
