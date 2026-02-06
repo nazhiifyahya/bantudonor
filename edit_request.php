@@ -177,8 +177,9 @@ include 'layout/header.php';
                         <select name="donation_type" required
                                 class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-red-500">
                             <option value="">Pilih Jenis Donor</option>
-                            <option value="Darah Lengkap" <?php echo $request['donation_type'] == 'Darah Lengkap' ? 'selected' : ''; ?>>Darah Lengkap (Whole Blood)</option>
-                            <option value="Trombosit" <?php echo $request['donation_type'] == 'Trombosit' ? 'selected' : ''; ?>>Trombosit (Platelet)</option>
+                            <option value="Whole Blood" <?php echo $request['donation_type'] == 'Whole Blood' ? 'selected' : ''; ?>>Whole Blood</option>
+                            <option value="Red Blood Cells" <?php echo $request['donation_type'] == 'Red Blood Cells' ? 'selected' : ''; ?>>Red Blood Cells</option>
+                            <option value="Platelets" <?php echo $request['donation_type'] == 'Platelets' ? 'selected' : ''; ?>>Platelets</option>
                             <option value="Plasma" <?php echo $request['donation_type'] == 'Plasma' ? 'selected' : ''; ?>>Plasma</option>
                         </select>
                     </div>
@@ -200,9 +201,8 @@ include 'layout/header.php';
                     <div class="w-full flex flex-col gap-2">
                         <label class="text-gray-900 text-base font-medium">Nomor WhatsApp <span class="text-red-500">*</span></label>
                         <input type="tel" name="contact_phone" value="<?php echo htmlspecialchars($request['contact_phone']); ?>" required
-                               placeholder="Contoh: +6281234567890"
+                               placeholder="Contoh: 081234567890"
                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:border-red-500">
-                        <span class="text-slate-600 text-sm">Format: +62 atau 08xx</span>
                     </div>
                 </div>
 
