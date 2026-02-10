@@ -25,6 +25,9 @@ if (isset($_SESSION['user_id'])) {
 $bloodType = isset($_GET['blood_type']) ? $_GET['blood_type'] : '';
 $showAll = isset($_GET['show_all']) ? $_GET['show_all'] : '';
 $city = isset($_GET['city']) ? $_GET['city'] : '';
+$userLat = isset($_GET['lat']) ? floatval($_GET['lat']) : null;
+$userLon = isset($_GET['lon']) ? floatval($_GET['lon']) : null;
+$useLocation = isset($_GET['use_location']) ? $_GET['use_location'] : '';
 
 // Only apply auto-filter if user hasn't explicitly chosen to show all
 if (empty($bloodType) && !empty($userBloodType) && $showAll !== '1') {
@@ -40,12 +43,14 @@ $filters = [];
 if ($bloodType && $bloodType !== 'all') {
     $filters['blood_type'] = $bloodType;
 }
-if ($city) {
+if ($city && !$useLocation) {
     $filters['city'] = $city;
 }
 
-// Use smart sorting that considers user preferences
-if (empty($filters)) {
+// Use coordinate-based search if user location is provided
+if ($useLocation === '1' && $userLat !== null && $userLon !== null) {
+    $bloodRequests = $bloodRequestModel->searchByLocation($userLat, $userLon, 20, $filters, $userBloodType);
+} elseif (empty($filters)) {
     $bloodRequests = $bloodRequestModel->getActiveRequestsWithSmartSorting($userBloodType, $userCity);
 } else {
     $bloodRequests = $bloodRequestModel->searchRequestsWithSmartSorting($filters, $userBloodType, $userCity);
@@ -79,88 +84,51 @@ include 'layout/header.php';
     <section class="bg-slate-50">
         <div class="w-full px-4 sm:px-8 md:px-12 lg:px-20 py-12 flex flex-col justify-center items-start gap-8 max-w-[1280px] relative mx-auto">
         <!-- Search Form -->
-        <form method="GET" class="w-full px-4 py-4 bg-white rounded-lg flex flex-wrap sm:flex-nowrap gap-3 justify-start items-center">
-            <select name="blood_type" class="w-full sm:w-64 px-4 py-3 rounded-lg border border-slate-300">
-                <option value="all">Semua Golongan Darah</option>
-                <?php 
-                $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-                foreach ($bloodTypes as $type): 
-                ?>
-                    <option value="<?php echo $type; ?>" <?php echo ($bloodType === $type) ? 'selected' : ''; ?>>
-                        <?php echo $type; ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+        <form method="GET" id="searchForm" class="w-full px-4 py-4 bg-white rounded-lg flex flex-col gap-3">
+            <div class="flex flex-wrap sm:flex-nowrap gap-3 justify-start items-center">
+                <select name="blood_type" class="w-full sm:w-64 px-4 py-3 rounded-lg border border-slate-300">
+                    <option value="all">Semua Golongan Darah</option>
+                    <?php 
+                    $bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+                    foreach ($bloodTypes as $type): 
+                    ?>
+                        <option value="<?php echo $type; ?>" <?php echo ($bloodType === $type) ? 'selected' : ''; ?>>
+                            <?php echo $type; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                
+                <input type="text" 
+                       id="cityInput"
+                       name="city" 
+                       value="<?php echo htmlspecialchars($city); ?>"
+                       placeholder="Cari kota/kabupaten" 
+                       class="flex-grow min-w-[150px] px-4 py-3 rounded-lg border border-slate-300">
+                
+                <input type="hidden" name="use_location" id="useLocationInput" value="">
+                <input type="hidden" name="lat" id="latInput" value="">
+                <input type="hidden" name="lon" id="lonInput" value="">
+                
+                <button type="submit" class="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition w-full sm:w-auto">
+                    Cari
+                </button>
+                
+                <a href="blood_requests.php?show_all=1" class="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition w-full sm:w-auto">
+                    Lihat Semua
+                </a>
+            </div>
             
-            <input type="text" 
-                   name="city" 
-                   value="<?php echo htmlspecialchars($city); ?>"
-                   placeholder="Cari kota/kabupaten" 
-                   class="flex-grow min-w-[150px] px-4 py-3 rounded-lg border border-slate-300">
-            
-            <button type="submit" class="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition w-full sm:w-auto">
-                Cari
-            </button>
-            
-            <a href="blood_requests.php?show_all=1" class="px-8 py-3 rounded-full bg-red-500 text-white text-base font-semibold hover:bg-red-600">
-                Lihat Semua
-            </a>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="useMyLocation" class="w-4 h-4 text-red-500 border-gray-300 rounded focus:ring-red-500">
+                <label for="useMyLocation" class="text-sm text-gray-700 cursor-pointer">Gunakan lokasi saya (radius 20km)</label>
+            </div>
         </form>
-
-        <!-- Sorting Info -->
-        <?php if (isset($_SESSION['user_id']) && (!empty($userBloodType) || !empty($userCity))): ?>
-        <div class="w-full px-4 py-3 flex flex-col gap-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <div class="flex items-center gap-2 mb-2">
-                <i class="mdi mdi-sort text-blue-600"></i>
-                <span class="text-blue-800 text-sm font-medium">
-                    Hasil diurutkan berdasarkan: Golongan darah yang cocok → Lokasi terdekat → Tingkat urgensi → Tanggal dibutuhkan
-                </span>
-            </div>
-            <div class="flex flex-wrap gap-4 text-xs">
-                <div class="flex items-center gap-1">
-                    <div class="w-3 h-3 bg-orange-400 rounded"></div>
-                    <span class="text-gray-600">Golongan Darah Cocok</span>
-                </div>
-                <div class="flex items-center gap-1">
-                    <div class="w-3 h-3 bg-blue-400 rounded"></div>
-                    <span class="text-gray-600">Lokasi Dekat</span>
-                </div>
-            </div>
-        </div>
-        <?php endif; ?>
 
         <!-- Results -->
         <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <?php if (!empty($bloodRequests)): ?>
                 <?php foreach ($bloodRequests as $request): ?>
-                <?php
-                // Check if this request matches user preferences for visual indicators
-                $bloodTypeMatch = false;
-                $cityMatch = false;
-                
-                if (isset($_SESSION['user_id'])) {
-                    $requestBloodType = $request['blood_type_abo'] . $request['blood_type_rhesus'];
-                    $bloodTypeMatch = ($requestBloodType === $userBloodType);
-                    $cityMatch = ($request['city'] === $userCity);
-                }
-                
-                // Determine card styling based on matches
-                $cardClass = 'p-5 bg-white flex flex-col justify-start items-start gap-4 relative';
-                $priorityIndicator = '';
-                
-                if ($bloodTypeMatch && $cityMatch) {
-                    $cardClass .= ' border-l-4 border-red-500';
-                    $priorityIndicator = '<div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">Prioritas Tinggi</div>';
-                } elseif ($bloodTypeMatch) {
-                    $cardClass .= ' border-l-4 border-orange-400';
-                    $priorityIndicator = '<div class="absolute top-2 right-2 bg-orange-400 text-white text-xs px-2 py-1 rounded">Golongan Cocok</div>';
-                } elseif ($cityMatch) {
-                    $cardClass .= ' border-l-4 border-blue-400';
-                    $priorityIndicator = '<div class="absolute top-2 right-2 bg-blue-400 text-white text-xs px-2 py-1 rounded">Lokasi Dekat</div>';
-                }
-                ?>
-                <div class="<?php echo $cardClass; ?>">
-                    <?php echo $priorityIndicator; ?>
+                <div class="p-5 bg-white flex flex-col justify-start items-start gap-4 relative">
                     <div class="w-full flex justify-start items-end gap-4">
                         <div class="flex-1 flex flex-col justify-start items-start gap-2">
                             <div class="text-slate-600 text-sm font-normal">#<?php echo htmlspecialchars($request['request_code']); ?></div>
@@ -265,4 +233,47 @@ include 'layout/header.php';
             console.error('Could not copy text: ', err);
         });
     }
+    
+    // Handle location checkbox
+    const useMyLocationCheckbox = document.getElementById('useMyLocation');
+    const cityInput = document.getElementById('cityInput');
+    const searchForm = document.getElementById('searchForm');
+    const useLocationInput = document.getElementById('useLocationInput');
+    const latInput = document.getElementById('latInput');
+    const lonInput = document.getElementById('lonInput');
+    
+    useMyLocationCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            cityInput.value = '';
+            cityInput.disabled = true;
+            cityInput.classList.add('bg-gray-100');
+        } else {
+            cityInput.disabled = false;
+            cityInput.classList.remove('bg-gray-100');
+            useLocationInput.value = '';
+            latInput.value = '';
+            lonInput.value = '';
+        }
+    });
+    
+    // Handle form submission
+    searchForm.addEventListener('submit', function(e) {
+        if (useMyLocationCheckbox.checked) {
+            e.preventDefault();
+            
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    useLocationInput.value = '1';
+                    latInput.value = position.coords.latitude;
+                    lonInput.value = position.coords.longitude;
+                    searchForm.submit();
+                }, function(error) {
+                    alert('Tidak dapat mengakses lokasi Anda. Pastikan Anda telah memberikan izin akses lokasi.');
+                    console.error('Geolocation error:', error);
+                });
+            } else {
+                alert('Browser Anda tidak mendukung geolocation.');
+            }
+        }
+    });
 </script>

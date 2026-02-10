@@ -234,6 +234,54 @@ class BloodRequest extends BaseModel {
     }
 
     /**
+     * Search blood requests by user location within specified radius
+     */
+    public function searchByLocation($lat, $lon, $radiusKm = 20, $filters = [], $userBloodType = '') {
+        $sql = "SELECT *, 
+                ST_Y(location) AS latitude,
+                ST_X(location) AS longitude,
+                ST_Distance_Sphere(
+                    location,
+                    POINT(:lon, :lat)
+                ) / 1000 as distance_km,
+                CASE 
+                    WHEN CONCAT(blood_type_abo, blood_type_rhesus) = :userBloodType THEN 1 
+                    ELSE 0 
+                END as blood_type_match
+                FROM {$this->table} 
+                WHERE status = 'Active'
+                AND ST_Distance_Sphere(
+                    location,
+                    POINT(:lon, :lat)
+                ) / 1000 <= :radiusKm";
+        
+        $params = [
+            ':lat' => $lat,
+            ':lon' => $lon,
+            ':radiusKm' => $radiusKm,
+            ':userBloodType' => $userBloodType
+        ];
+        
+        // Apply filters
+        if (!empty($filters['blood_type'])) {
+            $bloodTypeParts = str_split($filters['blood_type']);
+            if (count($bloodTypeParts) >= 2) {
+                $abo = substr($filters['blood_type'], 0, -1);
+                $rhesus = substr($filters['blood_type'], -1);
+                $sql .= " AND blood_type_abo = :abo AND blood_type_rhesus = :rhesus";
+                $params[':abo'] = $abo;
+                $params[':rhesus'] = $rhesus;
+            }
+        }
+        
+        $sql .= " ORDER BY blood_type_match DESC, distance_km ASC, created_at ASC";
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Search blood requests with smart sorting for logged in users
      */
     public function searchRequestsWithSmartSorting($filters = [], $userBloodType = '', $userCity = '') {
