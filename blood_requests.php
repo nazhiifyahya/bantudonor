@@ -199,7 +199,14 @@ include 'layout/header.php';
                     
                     <!-- Action buttons -->
                     <div class="flex justify-start items-start gap-4">
-                        <a href="https://wa.me/<?php echo str_replace(['+', '-', ' '], '', $request['contact_phone']); ?>" 
+                        <a href="https://wa.me/<?php 
+                            $phoneNumber = str_replace(['+', '-', ' ', '(', ')'], '', $request['contact_phone']); 
+                            // Convert Indonesian local format (08xx) to international format (628xx)
+                            if (substr($phoneNumber, 0, 1) === '0') {
+                                $phoneNumber = '62' . substr($phoneNumber, 1);
+                            }
+                            echo $phoneNumber;
+                        ?>" 
                            target="_blank"
                            class="px-5 py-2 bg-green-700 rounded-full flex justify-center items-center gap-2">
                             <i class="mdi mdi-whatsapp text-slate-50"></i>
