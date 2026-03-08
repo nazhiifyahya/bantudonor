@@ -7,6 +7,8 @@
 // Set default values if not defined
 $pageTitle = isset($pageTitle) ? $pageTitle : 'BantuDonor - Jadilah Pahlawan Mulai dari Satu Tetes Darah';
 $currentPage = isset($currentPage) ? $currentPage : '';
+$isAdminLoggedIn = isset($_SESSION['admin_id']);
+$isUserLoggedIn = isset($_SESSION['user_id']);
 
 // Dynamic base URL - works on localhost and production
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -55,7 +57,10 @@ $baseUrl = $protocol . $_SERVER['HTTP_HOST'];
             <a href="<?php echo $baseUrl; ?>/blood_requests.php" class="<?php echo $currentPage === 'requests' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?> text-base hover:text-red-500 transition-colors">Daftar Kebutuhan Darah</a>
             <a href="<?php echo $baseUrl; ?>/create_request.php" class="<?php echo $currentPage === 'create_request' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?> text-base hover:text-red-500 transition-colors">Ajukan Permohonan</a>
             
-            <?php if (isset($_SESSION['user_id'])): ?>
+            <?php if ($isAdminLoggedIn): ?>
+                <a href="<?php echo $baseUrl; ?>/admin_dashboard.php" class="<?php echo $currentPage === 'admin_dashboard' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?> text-base hover:text-red-500 transition-colors">Dashboard</a>
+                <a href="<?php echo $baseUrl; ?>/logout.php" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Logout</a>
+            <?php elseif ($isUserLoggedIn): ?>
                 <!-- Logged in user menu -->
                 <a href="<?php echo $baseUrl; ?>/dashboard.php" class="<?php echo $currentPage === 'dashboard' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?> text-base hover:text-red-500 transition-colors">Dashboard</a>
                 <a href="<?php echo $baseUrl; ?>/logout.php" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Logout</a>
@@ -81,7 +86,10 @@ $baseUrl = $protocol . $_SERVER['HTTP_HOST'];
         <a href="<?php echo $baseUrl; ?>/index.php" class="block py-2 text-base hover:text-red-500 <?php echo $currentPage === 'home' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?>">Home</a>
         <a href="<?php echo $baseUrl; ?>/blood_requests.php" class="block py-2 text-base hover:text-red-500 <?php echo $currentPage === 'requests' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?>">Daftar Kebutuhan Darah</a>
         <a href="<?php echo $baseUrl; ?>/create_request.php" class="block py-2 text-base hover:text-red-500 <?php echo $currentPage === 'create_request' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?>">Ajukan Permohonan</a>
-        <?php if (isset($_SESSION['user_id'])): ?>
+        <?php if ($isAdminLoggedIn): ?>
+            <a href="<?php echo $baseUrl; ?>/admin_dashboard.php" class="block py-2 text-base hover:text-red-500 <?php echo $currentPage === 'admin_dashboard' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?>">Dashboard</a>
+            <a href="<?php echo $baseUrl; ?>/logout.php" class="block py-2 px-4 mt-2 bg-red-500 text-white rounded-lg text-center hover:bg-red-600 transition-colors">Logout</a>
+        <?php elseif ($isUserLoggedIn): ?>
             <a href="<?php echo $baseUrl; ?>/dashboard.php" class="block py-2 text-base hover:text-red-500 <?php echo $currentPage === 'dashboard' ? 'text-red-500 font-semibold' : 'text-slate-600'; ?>">Dashboard</a>
             <a href="<?php echo $baseUrl; ?>/logout.php" class="block py-2 px-4 mt-2 bg-red-500 text-white rounded-lg text-center hover:bg-red-600 transition-colors">Logout</a>
         <?php else: ?>

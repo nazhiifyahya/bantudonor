@@ -2,12 +2,18 @@
 session_start();
 require_once 'config/database.php';
 require_once 'models/User.php';
+require_once 'models/Admin.php';
 
 // Set page variables for header template
 $pageTitle = 'Login - BantuDonor';
 $currentPage = 'login';
 
 $error = '';
+
+if (!empty($_SESSION['admin_id'])) {
+        header('Location: admin_dashboard.php');
+        exit;
+    }
 
 if (!empty($_SESSION['user_id'])){
         // User is already logged in, redirect to dashboard
@@ -17,23 +23,34 @@ if (!empty($_SESSION['user_id'])){
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userModel = new User();
+    $adminModel = new Admin();
     
-    $email = trim($_POST['email']);
+    $identifier = trim($_POST['identifier']);
     $password = $_POST['password'];
     
-    if (empty($email) || empty($password)) {
-        $error = 'Email dan password wajib diisi.';
+    if (empty($identifier) || empty($password)) {
+        $error = 'Username/Email dan password wajib diisi.';
     } else {
-        $user = $userModel->verifyPassword($email, $password);
-        if ($user) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['full_name'];
-            $_SESSION['user_email'] = $user['email'];
-            header('Location: dashboard.php');
-            exit;
+        if (strpos($identifier, 'admin_') === 0) {
+            $admin = $adminModel->verifyPassword($identifier, $password);
+            if ($admin) {
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_username'] = $admin['username'];
+                header('Location: admin_dashboard.php');
+                exit;
+            }
         } else {
-            $error = 'Email atau password salah.';
+            $user = $userModel->verifyPassword($identifier, $password);
+            if ($user) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['full_name'];
+                $_SESSION['user_email'] = $user['email'];
+                header('Location: dashboard.php');
+                exit;
+            }
         }
+
+        $error = 'Username/Email atau password salah.';
     }
 }
 
@@ -55,10 +72,10 @@ include 'layout/header.php';
         <form method="POST" class="mt-8 space-y-6">
             <div class="rounded-md shadow-sm -space-y-px">
                 <div class="mb-4">
-                    <label for="email" class="sr-only">Email address</label>
-                    <input id="email" name="email" type="email" autocomplete="email" required
+                    <label for="identifier" class="sr-only">Username atau Email</label>
+                    <input id="identifier" name="identifier" type="text" autocomplete="username" required
                         class="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm"
-                        placeholder="Email address">
+                        placeholder="Username">
                 </div>
                 <div>
                     <label for="password" class="sr-only">Password</label>
