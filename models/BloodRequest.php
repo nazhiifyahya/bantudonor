@@ -8,6 +8,13 @@ require_once __DIR__ . '/BaseModel.php';
 class BloodRequest extends BaseModel {
     protected $table = 'blood_requests';
 
+    public function getAllForAdmin() {
+        $sql = "SELECT *, ST_Y(location) AS latitude, ST_X(location) AS longitude FROM {$this->table} ORDER BY id DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     /**
      * Generate unique request code
      */
