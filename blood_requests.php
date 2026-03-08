@@ -269,15 +269,43 @@ include 'layout/header.php';
             e.preventDefault();
             
             if ('geolocation' in navigator) {
+                // Options for better Safari compatibility
+                const geoOptions = {
+                    enableHighAccuracy: true,
+                    timeout: 10000,  // 10 seconds
+                    maximumAge: 30000  // Accept cached position up to 30 seconds old
+                };
+                
                 navigator.geolocation.getCurrentPosition(function(position) {
                     useLocationInput.value = '1';
                     latInput.value = position.coords.latitude;
                     lonInput.value = position.coords.longitude;
                     searchForm.submit();
                 }, function(error) {
-                    alert('Tidak dapat mengakses lokasi Anda. Pastikan Anda telah memberikan izin akses lokasi.');
+                    let errorMessage = 'Tidak dapat mengakses lokasi Anda. ';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage += 'Anda menolak akses lokasi. Silakan aktifkan izin lokasi di pengaturan browser.';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage += 'Informasi lokasi tidak tersedia.';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage += 'Permintaan lokasi timeout. Silakan coba lagi.';
+                            break;
+                        default:
+                            errorMessage += 'Terjadi kesalahan yang tidak diketahui.';
+                    }
+                    
+                    alert(errorMessage);
                     console.error('Geolocation error:', error);
-                });
+                    
+                    // Uncheck the box so user can try again or use city search
+                    useMyLocationCheckbox.checked = false;
+                    cityInput.disabled = false;
+                    cityInput.classList.remove('bg-gray-100');
+                }, geoOptions);
             } else {
                 alert('Browser Anda tidak mendukung geolocation.');
             }

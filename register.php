@@ -331,6 +331,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 Mendapatkan Lokasi...
             `;
             
+            // Options for better Safari compatibility
+            const geoOptions = {
+                enableHighAccuracy: true,
+                timeout: 10000,  // 10 seconds
+                maximumAge: 30000  // Accept cached position up to 30 seconds old
+            };
+            
             navigator.geolocation.getCurrentPosition(
                 function(position) {
                     const lat = position.coords.latitude;
@@ -357,20 +364,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     let errorMessage = 'Gagal mendapatkan lokasi. ';
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            errorMessage += 'Izin lokasi ditolak.';
+                            errorMessage += 'Izin lokasi ditolak. Silakan aktifkan izin lokasi di pengaturan browser Anda.';
                             break;
                         case error.POSITION_UNAVAILABLE:
                             errorMessage += 'Informasi lokasi tidak tersedia.';
                             break;
                         case error.TIMEOUT:
-                            errorMessage += 'Permintaan lokasi timeout.';
+                            errorMessage += 'Permintaan lokasi timeout. Silakan coba lagi.';
                             break;
                         default:
                             errorMessage += 'Terjadi kesalahan tidak dikenal.';
                             break;
                     }
                     alert(errorMessage);
-                }
+                    console.error('Geolocation error:', error);
+                },
+                geoOptions
             );
         } else {
             alert('Geolocation tidak didukung oleh browser ini.');
