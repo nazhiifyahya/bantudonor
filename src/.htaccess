@@ -1,0 +1,14 @@
+RewriteEngine On
+RewriteBase /
+
+# 1. If the request is for a real file or directory (like images/css), do nothing
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 2. Handle the /home alias specifically
+RewriteRule ^home$ index.php [L]
+
+# 3. For everything else, try appending .php if the .php file exists
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^/.]+)$ $1.php [L]
