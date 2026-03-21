@@ -16,6 +16,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY ./src /var/www/html
+COPY ./src .
 
 RUN chown -R www-data:www-data /var/www/html
