@@ -241,9 +241,93 @@ class BloodRequest extends BaseModel {
     }
 
     /**
+     * Get count of active blood requests with smart sorting
+     */
+    public function getActiveRequestsCount($userBloodType = '', $userCity = '') {
+        if (!empty($userBloodType) || !empty($userCity)) {
+            $sql = "SELECT COUNT(*) as total FROM {$this->table} 
+                    WHERE status = 'Active'";
+            $params = [];
+        } else {
+            $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE status = 'Active'";
+            $params = [];
+        }
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result['total'];
+    }
+
+    /**
+     * Get count of blood requests by location
+     */
+    public function getSearchByLocationCount($lat, $lon, $radiusKm = 20, $filters = [], $userBloodType = '') {
+        $sql = "SELECT COUNT(*) as total FROM {$this->table} 
+                WHERE status = 'Active'
+                AND ST_Distance_Sphere(
+                    location,
+                    POINT(:lon, :lat)
+                ) / 1000 <= :radiusKm";
+        
+        $params = [
+            ':lat' => $lat,
+            ':lon' => $lon,
+            ':radiusKm' => $radiusKm
+        ];
+        
+        // Apply filters
+        if (!empty($filters['blood_type'])) {
+            $bloodTypeParts = str_split($filters['blood_type']);
+            if (count($bloodTypeParts) >= 2) {
+                $abo = substr($filters['blood_type'], 0, -1);
+                $rhesus = substr($filters['blood_type'], -1);
+                $sql .= " AND blood_type_abo = :abo AND blood_type_rhesus = :rhesus";
+                $params[':abo'] = $abo;
+                $params[':rhesus'] = $rhesus;
+            }
+        }
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result['total'];
+    }
+
+    /**
+     * Get count of search requests with smart sorting
+     */
+    public function getSearchRequestsCount($filters = [], $userBloodType = '', $userCity = '') {
+        $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE status = 'Active'";
+        $params = [];
+        
+        // Apply filters
+        if (!empty($filters['blood_type'])) {
+            $bloodTypeParts = str_split($filters['blood_type']);
+            if (count($bloodTypeParts) >= 2) {
+                $abo = substr($filters['blood_type'], 0, -1);
+                $rhesus = substr($filters['blood_type'], -1);
+                $sql .= " AND blood_type_abo = :abo AND blood_type_rhesus = :rhesus";
+                $params[':abo'] = $abo;
+                $params[':rhesus'] = $rhesus;
+            }
+        }
+        
+        if (!empty($filters['city'])) {
+            $sql .= " AND city LIKE :city";
+            $params[':city'] = "%{$filters['city']}%";
+        }
+        
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return $result['total'];
+    }
+
+    /**
      * Search blood requests by user location within specified radius
      */
-    public function searchByLocation($lat, $lon, $radiusKm = 20, $filters = [], $userBloodType = '') {
+    public function searchByLocation($lat, $lon, $radiusKm = 20, $filters = [], $userBloodType = '', $limit = null, $offset = null) {
         $sql = "SELECT *, 
                 ST_Y(location) AS latitude,
                 ST_X(location) AS longitude,
@@ -283,6 +367,13 @@ class BloodRequest extends BaseModel {
         
         $sql .= " ORDER BY blood_type_match DESC, distance_km ASC, created_at ASC";
         
+        if ($limit) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset) {
+                $sql .= " OFFSET {$offset}";
+            }
+        }
+        
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchAll();
@@ -291,9 +382,8 @@ class BloodRequest extends BaseModel {
     /**
      * Search blood requests with smart sorting for logged in users
      */
-    public function searchRequestsWithSmartSorting($filters = [], $userBloodType = '', $userCity = '') {
+    public function searchRequestsWithSmartSorting($filters = [], $userBloodType = '', $userCity = '', $limit = null, $offset = null) {
         if (!empty($userBloodType) || !empty($userCity)) {
-            // Smart sorting query with user preferences
             $sql = "SELECT *, 
                     CASE 
                         WHEN CONCAT(blood_type_abo, blood_type_rhesus) = :userBloodType THEN 1 
@@ -339,6 +429,13 @@ class BloodRequest extends BaseModel {
             $sql .= " ORDER BY blood_type_match DESC, city_match DESC, created_at ASC";
         } else {
             $sql .= " ORDER BY created_at ASC";
+        }
+        
+        if ($limit) {
+            $sql .= " LIMIT {$limit}";
+            if ($offset) {
+                $sql .= " OFFSET {$offset}";
+            }
         }
         
         $stmt = $this->conn->prepare($sql);

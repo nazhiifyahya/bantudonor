@@ -47,14 +47,25 @@ if ($city && !$useLocation) {
     $filters['city'] = $city;
 }
 
+// Handle pagination
+$perPage = 12; // Number of requests per page
+$currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($currentPage - 1) * $perPage;
+
 // Use coordinate-based search if user location is provided
 if ($useLocation === '1' && $userLat !== null && $userLon !== null) {
-    $bloodRequests = $bloodRequestModel->searchByLocation($userLat, $userLon, 20, $filters, $userBloodType);
+    $bloodRequests = $bloodRequestModel->searchByLocation($userLat, $userLon, 20, $filters, $userBloodType, $perPage, $offset);
+    $totalCount = $bloodRequestModel->getSearchByLocationCount($userLat, $userLon, 20, $filters, $userBloodType);
 } elseif (empty($filters)) {
-    $bloodRequests = $bloodRequestModel->getActiveRequestsWithSmartSorting($userBloodType, $userCity);
+    $bloodRequests = $bloodRequestModel->getActiveRequestsWithSmartSorting($userBloodType, $userCity, $perPage, $offset);
+    $totalCount = $bloodRequestModel->getActiveRequestsCount($userBloodType, $userCity);
 } else {
-    $bloodRequests = $bloodRequestModel->searchRequestsWithSmartSorting($filters, $userBloodType, $userCity);
+    $bloodRequests = $bloodRequestModel->searchRequestsWithSmartSorting($filters, $userBloodType, $userCity, $perPage, $offset);
+    $totalCount = $bloodRequestModel->getSearchRequestsCount($filters, $userBloodType, $userCity);
 }
+
+// Calculate pagination info
+$totalPages = ceil($totalCount / $perPage);
 
 // Include header template
 include 'layout/header.php';
@@ -108,6 +119,7 @@ include 'layout/header.php';
                 <input type="hidden" name="use_location" id="useLocationInput" value="">
                 <input type="hidden" name="lat" id="latInput" value="">
                 <input type="hidden" name="lon" id="lonInput" value="">
+                <input type="hidden" name="page" value="1">
                 
                 <button type="submit" class="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition w-full sm:w-auto">
                     Cari
@@ -227,6 +239,86 @@ include 'layout/header.php';
                 </div>
             <?php endif; ?>
         </div>
+
+        <!-- Pagination -->
+        <?php if ($totalPages > 1): ?>
+        <div class="w-full flex justify-center items-center gap-2 mt-8">
+            <?php
+            // Build query string for pagination links
+            $queryParams = $_GET;
+            unset($queryParams['page']); // Remove page from query params
+            
+            $currentScript = basename($_SERVER['SCRIPT_NAME']); // Get current script name
+            if (!empty($queryParams)) {
+                $baseUrl = $currentScript . '?' . http_build_query($queryParams) . '&';
+            } else {
+                $baseUrl = $currentScript . '?';
+            }
+            ?>
+
+            <!-- Previous button -->
+            <?php if ($currentPage > 1): ?>
+                <a href="<?php echo $baseUrl; ?>page=<?php echo $currentPage - 1; ?>" 
+                   class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition">
+                    <i class="mdi mdi-chevron-left"></i> Sebelumnya
+                </a>
+            <?php else: ?>
+                <span class="px-4 py-2 bg-slate-100 border border-slate-300 text-slate-400 rounded-lg cursor-not-allowed">
+                    <i class="mdi mdi-chevron-left"></i> Sebelumnya
+                </span>
+            <?php endif; ?>
+
+            <!-- Page numbers -->
+            <?php
+            $startPage = max(1, $currentPage - 2);
+            $endPage = min($totalPages, $currentPage + 2);
+            
+            // Show first page if not in range
+            if ($startPage > 1) {
+                echo '<a href="' . $baseUrl . 'page=1" class="px-3 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition">1</a>';
+                if ($startPage > 2) {
+                    echo '<span class="px-2 py-2 text-slate-500">...</span>';
+                }
+            }
+            
+            // Show page numbers
+            for ($i = $startPage; $i <= $endPage; $i++) {
+                if ($i == $currentPage) {
+                    echo '<span class="px-3 py-2 bg-red-500 border border-red-500 text-white rounded-lg font-semibold">' . $i . '</span>';
+                } else {
+                    echo '<a href="' . $baseUrl . 'page=' . $i . '" class="px-3 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition">' . $i . '</a>';
+                }
+            }
+            
+            // Show last page if not in range
+            if ($endPage < $totalPages) {
+                if ($endPage < $totalPages - 1) {
+                    echo '<span class="px-2 py-2 text-slate-500">...</span>';
+                }
+                echo '<a href="' . $baseUrl . 'page=' . $totalPages . '" class="px-3 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition">' . $totalPages . '</a>';
+            }
+            ?>
+
+            <!-- Next button -->
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="<?php echo $baseUrl; ?>page=<?php echo $currentPage + 1; ?>" 
+                   class="px-4 py-2 bg-white border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition">
+                    Selanjutnya <i class="mdi mdi-chevron-right"></i>
+                </a>
+            <?php else: ?>
+                <span class="px-4 py-2 bg-slate-100 border border-slate-300 text-slate-400 rounded-lg cursor-not-allowed">
+                    Selanjutnya <i class="mdi mdi-chevron-right"></i>
+                </span>
+            <?php endif; ?>
+        </div>
+
+        <!-- Results info -->
+        <div class="w-full text-center mt-4 text-slate-600">
+            Menampilkan <?php echo count($bloodRequests); ?> dari <?php echo $totalCount; ?> permintaan darah
+            (Halaman <?php echo $currentPage; ?> dari <?php echo $totalPages; ?>)
+        </div>
+        <?php endif; ?>
+
         </div>
     </section>
 
