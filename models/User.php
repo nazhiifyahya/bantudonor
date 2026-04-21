@@ -247,8 +247,9 @@ class User extends BaseModel {
                 u.telegram_chat_id
                 FROM users u
                 JOIN blood_requests br ON br.id = :blood_request_id
-                WHERE u.blood_type_abo = br.blood_type_abo
+                WHERE (u.blood_type_abo = br.blood_type_abo OR u.blood_type_abo = 'O')
                 AND u.blood_type_rhesus = br.blood_type_rhesus 
+                AND (u.last_donation_date IS NULL OR DATE_ADD(u.last_donation_date, INTERVAL 3 MONTH) <= NOW())
                 AND ST_Distance_Sphere(u.location, br.location) <= :radius_meter;
                 ";
         
@@ -273,8 +274,9 @@ class User extends BaseModel {
                 JOIN blood_requests br ON br.id = :blood_request_id
                 WHERE u.whatsapp_notification = 'ya'
                 AND u.phone IS NOT NULL
-                AND u.blood_type_abo = br.blood_type_abo
+                AND (u.blood_type_abo = br.blood_type_abo OR u.blood_type_abo = 'O')
                 AND u.blood_type_rhesus = br.blood_type_rhesus
+                AND (u.last_donation_date IS NULL OR DATE_ADD(u.last_donation_date, INTERVAL 3 MONTH) <= NOW())
                 AND ST_Distance_Sphere(u.location, br.location) <= :radius_meter";
         
         $stmt = $this->conn->prepare($sql);
