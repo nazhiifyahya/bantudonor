@@ -189,7 +189,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                           "Golongan Darah: $bloodTypeAbo$bloodTypeRhesus\n" .
                                           "Jumlah Kantong: $bloodBagsNeeded\n" .
                                           "Jenis Donor: $donationType\n" .
-                                          "Narahubung: $contactPerson ($contactPhone, $contactEmail)\n\n" .
+                                          "Narahubung: $contactPerson\n" .
+                                          "Telepon: $contactPhone\n\n" .
                                           "Silakan cek aplikasi untuk detail lebih lanjut."
                             ]);
                         } catch (Exception $telegramError) {
@@ -217,10 +218,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                       "Golongan Darah: *$bloodTypeAbo$bloodTypeRhesus*\n" .
                                       "Jumlah Kantong: *$bloodBagsNeeded*\n" .
                                       "Jenis Donor: $donationType\n\n" .
-                                      "Narahubung:\n" .
-                                      "Nama: $contactPerson\n" .
-                                      "Telepon: $contactPhone\n" .
-                                      "Email: $contactEmail\n\n" .
+                                      "Narahubung: *$contactPerson*\n" .
+                                      "Telepon: $contactPhone\n\n" .
                                       "Segera hubungi narahubung jika Anda bersedia mendonor!";
                     
                     $whatsappResponse = sendWhatsAppMessage($phoneNumbers, $whatsappMessage);
