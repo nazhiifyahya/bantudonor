@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../models/Donation.php';
+require_once __DIR__ . '/../models/User.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -12,6 +13,7 @@ if (!isset($_SESSION['user_id'])) {
 header('Content-Type: application/json');
 
 $donationModel = new Donation();
+$userModel = new User();
 $response = ['status' => 'error', 'message' => 'Invalid request'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -43,6 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $donationModel->create($data);
                 
                 if ($result) {
+                    // Update user's last_donation_date
+                    $userModel->update($_SESSION['user_id'], ['last_donation_date' => $donationDate]);
                     $response = ['status' => 'success', 'message' => 'Riwayat donasi berhasil ditambahkan', 'id' => $result];
                 } else {
                     $response = ['status' => 'error', 'message' => 'Gagal menambahkan riwayat donasi'];
@@ -81,6 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $donationModel->update($id, $data);
                 
                 if ($result) {
+                    // Update user's last_donation_date to the most recent donation
+                    $userModel->update($_SESSION['user_id'], ['last_donation_date' => $donationDate]);
                     $response = ['status' => 'success', 'message' => 'Riwayat donasi berhasil diupdate'];
                 } else {
                     $response = ['status' => 'error', 'message' => 'Gagal mengupdate riwayat donasi'];
@@ -110,6 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $result = $donationModel->delete($id);
                 
                 if ($result) {
+                    // After deletion, update last_donation_date to the most recent remaining donation
+                    $stats = $donationModel->getUserDonationStats($_SESSION['user_id']);
+                    $lastDonationDate = $stats['last_donation_date'] ?? null;
+                    $userModel->update($_SESSION['user_id'], ['last_donation_date' => $lastDonationDate]);
                     $response = ['status' => 'success', 'message' => 'Riwayat donasi berhasil dihapus'];
                 } else {
                     $response = ['status' => 'error', 'message' => 'Gagal menghapus riwayat donasi'];
